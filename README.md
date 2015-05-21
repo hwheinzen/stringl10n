@@ -16,36 +16,41 @@ Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
 ## Usage
 Scan your projects code base for string literals, replace them by unique variable names, and map these names and strings in a JSON file:
 
-`{`
-`	"Copyright": "<year> <copyright owner>"`
-`	,"Package":  "example"`
-`	,"GenFile":  "stringl10n_generated.go"`
-`	,"Default":  "en"`
-`	,"Start":    "de"`
-`	,"Text":	[`
-`		{`
-`			"Name":     "localizedStringVariable1"`
-`			,"Locs": [`
-`				 {"ID": "en", "Value": "english words 1"}`
-`			]`
-`		}`
-`		,{`
-`			"Name":     "localizedStringVariable2"`
-`			,"Locs": [`
-`				 {"ID": "en", "Value": "english words 2"}`
-`			]`
-`		}`
-`	]`
-`}`
+```
+{
+	"Copyright": "<year> <copyright owner>"
+	,"Package":  "example"
+	,"GenFile":  "stringl10n_generated.go"
+	,"Default":  "en"
+	,"Start":    "de"
+	,"Text":	[
+		{
+			"Name":     "localizedStringVariable1"
+			,"Locs": [
+				 {"ID": "en", "Value": "english words 1"}
+			]
+		}
+		,{
+			"Name":     "localizedStringVariable2"
+			,"Locs": [
+				 {"ID": "en", "Value": "english words 2"}
+			]
+		}
+	]
+}
+```
 
 Add translations:
 
-`			"Name":     "localizedStringVariable1"`
-`			,"Locs": [`
-`				 {"ID": "en", "Value": "english words 1"}`
-`				,{"ID": "de", "Value": "deutsche Wörter 1"}`
-`				,{"ID": "fr", "Value": "mots françaises 1"}`
-`				...`
+```
+			"Name":     "localizedStringVariable1"
+			,"Locs": [
+				 {"ID": "en", "Value": "english words 1"}
+				,{"ID": "de", "Value": "deutsche Wörter 1"}
+				,{"ID": "fr", "Value": "mots françaises 1"}
+				...
+```
+
 Add one line to your go code:
 
 `//go:generate stringl10n -json=example.json`

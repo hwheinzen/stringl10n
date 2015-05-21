@@ -43,12 +43,13 @@ Scan your projects code base for string literals, replace them by unique variabl
 Add translations:
 
 ```
+...
 			"Name":     "localizedStringVariable1"
 			,"Locs": [
 				 {"ID": "en", "Value": "english words 1"}
 				,{"ID": "de", "Value": "deutsche Wörter 1"}
 				,{"ID": "fr", "Value": "mots françaises 1"}
-				...
+...
 ```
 
 Add one line to your go code:

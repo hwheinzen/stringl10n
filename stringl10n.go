@@ -17,7 +17,7 @@ const (
 )
 
 type Pair struct {
-	ID    string
+	Lang    string
 	Value string
 }
 type Phrase struct {
@@ -141,7 +141,7 @@ var ({{/*
 
 // Type L10nPair is used during string localization.
 type L10nPair struct {
-	ID    string
+	Lang  string
 	Value string
 }
 // Type L10nPhrase is used during string localization.
@@ -158,11 +158,11 @@ func (t *L10nText) l10nLocal(name, loc, def string) (value string, err error) {
 	for _, v := range *t {
 		if v.Name == name {
 			for _, w := range v.Locs {
-				if w.ID == loc {
+				if w.Lang == loc {
 					value = w.Value
 					return
 				}
-				if value == "" && w.ID == def { // default
+				if w.Lang == def && value == "" { // default
 					value = w.Value
 				}
 			}

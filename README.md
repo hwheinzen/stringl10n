@@ -27,13 +27,13 @@ Scan your projects code base for string literals, replace them by unique variabl
 		{
 			"Name":     "localizedStringVariable1"
 			,"Locs": [
-				 {"ID": "en", "Value": "english words 1"}
+				 {"Lang": "en", "Value": "english words 1"}
 			]
 		}
 		,{
 			"Name":     "localizedStringVariable2"
 			,"Locs": [
-				 {"ID": "en", "Value": "english words 2"}
+				 {"Lang": "en", "Value": "english words 2"}
 			]
 		}
 	]
@@ -45,9 +45,9 @@ Add translations:
 ```
 			"Name":     "localizedStringVariable1"
 			,"Locs": [
-				 {"ID": "en", "Value": "english words 1"}
-				,{"ID": "de", "Value": "deutsche Wörter 1"}
-				,{"ID": "fr", "Value": "mots françaises 1"}
+				 {"Lang": "en", "Value": "english words 1"}
+				,{"Lang": "de", "Value": "deutsche Wörter 1"}
+				,{"Lang": "fr", "Value": "mots françaises 1"}
 				...
 ```
 

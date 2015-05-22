@@ -8,43 +8,43 @@
 		{
 			"Name":     "argConfigTxt"
 			,"Locs": [
-				{ "ID": "de", "Value": "Konfig-Dateiname (MUSS)"}
-				,{"ID": "en", "Value": "config file name"}
+				{ "Lang": "de", "Value": "Konfig-Dateiname (MUSS)"}
+				,{"Lang": "en", "Value": "config file name"}
 			]
 		}
 		,{
 			"Name":     "argLocalTxt"
 			,"Locs": [
-				{ "ID": "de", "Value": ":Port dieses TCP-Servers"}
-				,{"ID": "en", "Value": ":TCP port (optional)"}
+				{ "Lang": "de", "Value": ":Port dieses TCP-Servers"}
+				,{"Lang": "en", "Value": ":TCP port (optional)"}
 			]
 		}
 		,{
 			"Name":     "argRemoteTxt"
 			,"Locs": [
-				{ "ID": "de", "Value": "[Adresse]:Port des Datenservers"}
-				,{"ID": "en", "Value": "[address]:port of the data server"}
+				{ "Lang": "de", "Value": "[Adresse]:Port des Datenservers"}
+				,{"Lang": "en", "Value": "[address]:port of the data server"}
 			]
 		}
 		,{
 			"Name":     "argHelpTxt"
 			,"Locs": [
-				{ "ID": "de", "Value": "Hilfe"}
-				,{"ID": "en", "Value": "help"}
+				{ "Lang": "de", "Value": "Hilfe"}
+				,{"Lang": "en", "Value": "help"}
 			]
 		}
 		,{
 			"Name":     "startDataAddrErr"
 			,"Locs": [
-				{ "ID": "de", "Value": "Adresse des Daten-Servers fehlt"}
-				,{"ID": "en", "Value": "address of the data server is missing"}
+				{ "Lang": "de", "Value": "Adresse des Daten-Servers fehlt"}
+				,{"Lang": "en", "Value": "address of the data server is missing"}
 			]
 		}
 		,{
 			"Name":     "startlocalPortErr"
 			,"Locs": [
-				{ "ID": "de", "Value": "TCP-Port dieses Servers fehlt"}
-				,{"ID": "en", "Value": "listening port is missing"}
+				{ "Lang": "de", "Value": "TCP-Port dieses Servers fehlt"}
+				,{"Lang": "en", "Value": "listening port is missing"}
 			]
 		}
 	]

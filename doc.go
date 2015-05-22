@@ -23,17 +23,17 @@
 		{
 			"Name":     "localizedStringVariable1"
 			,"Locs": [
-				{ "ID": "de", "Value": "deutsche Wörter 1"}
-				,{"ID": "en", "Value": "english words 1"}
-				,{"ID": "fr", "Value": "mots françaises 1"}
+				{ "Lang": "de", "Value": "deutsche Wörter 1"}
+				,{"Lang": "en", "Value": "english words 1"}
+				,{"Lang": "fr", "Value": "mots françaises 1"}
 			]
 		}
 		,{
 			"Name":     "localizedStringVariable2"
 			,"Locs": [
-				{ "ID": "de", "Value": "deutsche Wörter 2"}
-				,{"ID": "en", "Value": "english words 2"}
-				,{"ID": "fr", "Value": "mots françaises 2"}
+				{ "Lang": "de", "Value": "deutsche Wörter 2"}
+				,{"Lang": "en", "Value": "english words 2"}
+				,{"Lang": "fr", "Value": "mots françaises 2"}
 			]
 		}
 	]

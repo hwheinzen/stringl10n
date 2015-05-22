@@ -128,9 +128,11 @@ import (
 	"errors"
 	"encoding/json"
 	"log"
+	"sync"
 )
 
-var ({{/*
+var (
+	l10nMux sync.RWMutex{{/*
 */}}{{range $i, $phrase := .Text}}
 	{{$phrase.Name}} string{{/*
 */}}{{end}}
@@ -180,10 +182,15 @@ func L10nSetLocale(loc, def string) (err error) {
 		return
 	}{{/*
 */}}{{range $i, $phrase := .Text}}
-	{{$phrase.Name}}, err = t.l10nLocal("{{$phrase.Name}}", loc, def)
+	{{$phrase.Name}}_tmp, err := t.l10nLocal("{{$phrase.Name}}", loc, def)
 	if err != nil {
 		return
 	}{{/*
+*/}}{{end}}
+	l10nMux.Lock()
+	defer l10nMux.Unlock(){{/*
+*/}}{{range $i, $phrase := .Text}}
+	{{$phrase.Name}} = {{$phrase.Name}}_tmp{{/*
 */}}{{end}}
 	return
 }

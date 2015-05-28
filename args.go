@@ -28,7 +28,7 @@ func args() (argJson string) {
 	var argHelp bool
 
 	flag.StringVar(&argJson, "json", "", "Input file name")
-	flag.BoolVar(&argHelp, "help", false, "Help")
+	flag.BoolVar(&argHelp, "help", false, "Usage information")
 
 	flag.Usage = argsUsage
 	flag.Parse()
@@ -39,7 +39,7 @@ func args() (argJson string) {
 	}
 
 	if argJson == "" {
-		fmt.Println(pgmname+":", "-json missing")
+		fmt.Fprintln(os.Stderr, pgmname+":", "flag is missing:", "-json")
 		argsUsage()
 		os.Exit(2)
 	}
@@ -48,6 +48,6 @@ func args() (argJson string) {
 }
 
 func argsUsage() {
-	fmt.Fprintf(os.Stderr, "Usage: %s [OPTION] ...\n", pgmname)
+	fmt.Fprintln(os.Stderr, "Usage:", pgmname, "[OPTION]...")
 	flag.PrintDefaults()
 }

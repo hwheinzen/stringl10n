@@ -1,12 +1,12 @@
 # stringl10n
-A simple string localization tool for Go
+A simple string localization tool for Go.
 
-This command generates Go code. It allows to initially choose a language for text strings at compile time, and to reset globally the language at run time.
+This command generates two source files that can be included in a Go project:
+- one that provides a function that translates strings
+- one that provides a unit test
 
 ### Limitations
 There is neither variable substitution nor plural handling.
-
-Because the language gets set globally this is *not* a solution for multi-user multi-language environments.
 
 ### Installing
 Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
@@ -14,50 +14,34 @@ Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
 `$ go get github.com/hwheinzen/stringl10n`
 
 ### Usage
-Scan your projects code base for string literals, replace them by unique variable names, and map these names and strings inside a JSON file:
+Scan your projects code base for string literals, and map these strings with their translations inside a JSON file (e.g. example.json):
 
 ```
 {
-	"Copyright": "<year> <copyright owner>"
+	"Copyright": "2015 Itts Mee"
 	,"Package":  "example"
 	,"GenFile":  "stringl10n_generated.go"
-	,"Default":  "en"
-	,"Start":    "de"
-	,"Text":	[
-		{
-			"Name":     "localizedStringVariable1"
-			,"Locs": [
-				 {"Lang": "en", "Value": "english words 1"}
-			]
-		}
-		,{
-			"Name":     "localizedStringVariable2"
-			,"Locs": [
-				 {"Lang": "en", "Value": "english words 2"}
-			]
-		}
-	]
+	,"Text":	{
+		"programmer's words 1": [
+			{ "Lang": "de", "Value": "deutsche Wörter 1"}
+			,{"Lang": "en", "Value": "english words 1"}
+			,{"Lang": "fr", "Value": "mots françaises 1"}
+		]
+		,"programmer's words 2": [
+			{ "Lang": "de", "Value": "deutsche Wörter 2"}
+			,{"Lang": "en", "Value": "english words 2"}
+			,{"Lang": "fr", "Value": "mots françaises 2"}
+		]
+	}
 }
-```
-
-Add translations:
-
-```
-...
-			"Name":     "localizedStringVariable1"
-			,"Locs": [
-				 {"Lang": "en", "Value": "english words 1"}
-				,{"Lang": "de", "Value": "deutsche Wörter 1"}
-				,{"Lang": "fr", "Value": "mots françaises 1"}
-				...
-...
 ```
 
 Add one line to your go code:
 
 `//go:generate stringl10n -json=example.json`
 
-Then run `go generate` before building your package or command.
+Run `go generate`.
 
-### TODO
-- Try a more dynamic version
+You can now use function t, for example:
+
+`	err := errors(t("programmer's words 1", "de"))`

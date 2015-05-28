@@ -1,51 +1,31 @@
 {
-	"Copyright": "2015 <copyright owner>"
+	"Copyright": "2015 Itts Mee"
 	,"Package":  "example"
 	,"GenFile":  "stringl10n_generated.go"
-	,"Default":  "en"
-	,"Start":    "de"
-	,"Text":	[
-		{
-			"Name":     "argConfigTxt"
-			,"Locs": [
-				{ "Lang": "de", "Value": "Konfig-Dateiname (MUSS)"}
-				,{"Lang": "en", "Value": "config file name"}
-			]
-		}
-		,{
-			"Name":     "argLocalTxt"
-			,"Locs": [
-				{ "Lang": "de", "Value": ":Port dieses TCP-Servers"}
-				,{"Lang": "en", "Value": ":TCP port (optional)"}
-			]
-		}
-		,{
-			"Name":     "argRemoteTxt"
-			,"Locs": [
-				{ "Lang": "de", "Value": "[Adresse]:Port des Datenservers"}
-				,{"Lang": "en", "Value": "[address]:port of the data server"}
-			]
-		}
-		,{
-			"Name":     "argHelpTxt"
-			,"Locs": [
-				{ "Lang": "de", "Value": "Hilfe"}
-				,{"Lang": "en", "Value": "help"}
-			]
-		}
-		,{
-			"Name":     "startDataAddrErr"
-			,"Locs": [
-				{ "Lang": "de", "Value": "Adresse des Daten-Servers fehlt"}
-				,{"Lang": "en", "Value": "address of the data server is missing"}
-			]
-		}
-		,{
-			"Name":     "startlocalPortErr"
-			,"Locs": [
-				{ "Lang": "de", "Value": "TCP-Port dieses Servers fehlt"}
-				,{"Lang": "en", "Value": "listening port is missing"}
-			]
-		}
-	]
+	,"Text": {
+		 ":TCP port (optional)": [
+			{ "Lang":"de","Value":":Port dieses TCP-Servers"}
+			,{"Lang":"en","Value":":TCP port (optional)"}
+		]
+		,"[address]:port of the data server": [
+			{ "Lang":"de","Value":"[Adresse]:Port des Datenservers"}
+			,{"Lang":"en","Value":"[address]:port of the data server"}
+		]
+		,"address of the data server is missing": [
+			{ "Lang":"de","Value":"Adresse des Daten-Servers fehlt"}
+			,{"Lang":"en","Value":"address of the data server is missing"}
+		]
+		,"config file name": [
+			{ "Lang":"de","Value":"Konfig-Dateiname (MUSS)"}
+			,{"Lang":"en","Value":"config file name"}
+		]
+		,"help": [
+			{ "Lang":"de","Value":"Hilfe"}
+			,{"Lang":"en","Value":"help"}
+		]
+		,"listening port is missing": [
+			{ "Lang":"de","Value":"TCP-Port dieses Servers fehlt"}
+			,{"Lang":"en","Value":"listening port is missing"}
+		]
+	}
 }

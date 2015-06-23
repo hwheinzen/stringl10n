@@ -1,47 +1,13 @@
 # stringl10n
-A simple string localization tool for Go.
+String localization tools for Go.
 
-This command generates two source files that can be included in a Go project:
-- one that provides a function that translates strings
-- one that provides a unit test
+Two commands are available:
 
-### Limitations
-There is neither variable substitution nor plural handling.
+One: stringl10n generates code to be included in a project. 
+A function l10nTranslate (alias t) translates strings.
+A function l10nSubstitute resolves text/template expressions in a
+string and substitutes variables. It needs a JSON input file.
 
-### Installing
-Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
-
-`$ go get github.com/hwheinzen/stringl10n`
-
-### Usage
-Scan your projects code base for string literals, and map these strings with their translations inside a JSON file (e.g. example.json):
-
-```
-{
-	"Copyright": "2015 Itts Mee"
-	,"Package":  "example"
-	,"GenFile":  "stringl10n_generated.go"
-	,"Text":	{
-		"programmer's words 1": [
-			{ "Lang": "de", "Value": "deutsche Wörter 1"}
-			,{"Lang": "en", "Value": "english words 1"}
-			,{"Lang": "fr", "Value": "mots françaises 1"}
-		]
-		,"programmer's words 2": [
-			{ "Lang": "de", "Value": "deutsche Wörter 2"}
-			,{"Lang": "en", "Value": "english words 2"}
-			,{"Lang": "fr", "Value": "mots françaises 2"}
-		]
-	}
-}
-```
-
-Add one line to your go code:
-
-`//go:generate stringl10n -json=example.json`
-
-Run `go generate`.
-
-You can now use function t, for example:
-
-`	err := errors(t("programmer's words 1", "de"))`
+Two: stringl10nextract extracts string literals from a go project
+and puts them into a JSON-encoded file. After editing this can
+be input for stringl10n.

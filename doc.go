@@ -10,7 +10,9 @@
 // 
 // - And one that provides a unit test.
 // 
-// Information must be passed in via a JSON file (e.g. example.json):
+// Information must be passed in via a JSON file (e.g. example.json).
+// There is also a tool stringl10nextract which creates a skeleton
+// for such a file.
 /*
  {
 	"Copyright": "2015 Itts Mee"

@@ -23,7 +23,7 @@ In your project directory:
 and you'll get a file `example.txt` that looks something like:
 
 ```
-// ... some insructions here ...
+// ... some instructions here ...
 {
 	"Copyright": "2015 Itts Mee"
 	,"Package":  "example"

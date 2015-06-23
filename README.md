@@ -12,3 +12,8 @@ file.
 2: stringl10nextract extracts string literals from a go project
 and puts them into a JSON-encoded file. After editing this can
 be input for stringl10n.
+
+### Installing
+Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
+
+`$ go get github.com/hwheinzen/stringl10n/...`

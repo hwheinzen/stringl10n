@@ -13,7 +13,7 @@ literals get extracted. Remove them by editing.
 
 Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
 
-`$ go get github.com/hwheinzen/stringl10n`
+`$ go get github.com/hwheinzen/stringl10n/cmd/stringl10nextract`
 
 ### Usage
 In your project directory:

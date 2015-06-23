@@ -11,7 +11,7 @@ There is neither variable substitution nor plural handling.
 ### Installing
 Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
 
-`$ go get github.com/hwheinzen/stringl10n`
+`$ go get github.com/hwheinzen/stringl10n/cmd/stringl10n`
 
 ### Usage
 Scan your projects code base for string literals, and map these strings with their translations inside a JSON file (e.g. example.json):

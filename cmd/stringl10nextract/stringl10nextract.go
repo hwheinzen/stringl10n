@@ -54,6 +54,8 @@ const (
 	foot = "\t}\n}\n"
 )
 
+var oFile *os.File
+
 func main() {
 	root, out := args()
 
@@ -64,7 +66,6 @@ func main() {
 }
 
 func createOutFile(dir, out string) (err error) {
-	var oFile *os.File
 	if out != "" {
 		oFile, err = os.Create(out)
 		if err != nil {

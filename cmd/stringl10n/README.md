@@ -48,4 +48,4 @@ You can now use function t, for example:
 `	err := errors(t("programmer's words 1", "de"))`
 
 After translating you can substitute text/template expressions inside
-the string with matching variables. More is in the API docs.
+the string with matching variables. More info is in the API docs.

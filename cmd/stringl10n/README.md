@@ -2,11 +2,11 @@
 A simple string localization tool for Go.
 
 This command generates two source files that can be included in a Go project:
-- one that provides a function that translates strings
+- one that provides functions for translating strings and for variable substitution
 - one that provides a unit test
 
 ### Limitations
-There is neither variable substitution nor plural handling.
+There is no plural handling.
 
 ### Installing
 Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:

@@ -44,9 +44,9 @@
 			,{"Lang": "en", "Value": "english words 2"}
 			,{"Lang": "fr", "Value": "mots françaises 2"}
 		]
-		,"A: {{printf \"%d\" .I1}} B: {{printf \"%d\" .F1}}": [
-			{ "Lang":"en","Value":"A: {{printf \"%d\" .I1}} B: {{printf \"%d\" .F1}}"}
-			,{"Lang":"de","Value":"A: {{printf \"%d\" .F1}} A: {{printf \"%d\" .I1}}"}
+		,"A: {{printf \"%d\" .I1}} B: {{printf \"%f\" .F1}}": [
+			{ "Lang":"en","Value":"A: {{printf \"%d\" .I1}} B: {{printf \"%f\" .F1}}"}
+			,{"Lang":"de","Value":"A: {{printf \"%f\" .F1}} A: {{printf \"%d\" .I1}}"}
 		]
 	}
  }

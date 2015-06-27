@@ -1,0 +1,32 @@
+{
+	"Copyright": "2015 Itts Mee"
+	,"Package":  "main"
+	,"GenFile":  "stringl10n_generated.go"
+
+	,"Vars":     [
+			{ "Name": "I1", "Type": "int"}
+			,{"Name": "Fl1", "Type": "float64"}
+			,{"Name": "S1", "Type": "Struktur"}
+		]
+
+	,"Funcs": [
+			{ "Name": "replace", "Function": "strings.Replace", "Path": "strings"}
+			,{"Name": "trimr", "Function": "strings.TrimRight"}
+	]
+
+	,"Texts": {
+		"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}": [
+			{ "Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimr (printf \"%f\" .Fl1) \"0\"}}"}
+			,{"Lang":"de","Value":"Zwei: {{trimr (replace (printf \"%f\" .Fl1) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"}
+			,{"Lang":"ex","Value":"Struktur: {{print .S1}}"}
+		]
+		,"address of the data server is missing": [
+			{ "Lang":"de","Value":"Adresse des Daten-Servers fehlt"}
+			,{"Lang":"en","Value":"address of the data server is missing"}
+		]
+		,"help": [
+			{ "Lang":"de","Value":"Hilfe"}
+			,{"Lang":"en","Value":"help"}
+		]
+	}
+}

@@ -34,9 +34,13 @@ and you'll get a file `example.txt` that looks something like:
 			,{"Name": "", "Type": ""}
 		]
 
+	,"Funcs": [
+			{ "Name": "", "Function": "", "Path": ""}
+			,{"Name": "", "Function": "", "Path": ""}
+	]
+
 	,"Texts":	{
-		"Dummy": [] // FIRST ENTRY MUST NOT HAVE A LEADING COMMA
-		,"programmer's words 1": [
+		"programmer's words 1": [
 			{ "Lang": "de", "Value": "deutsche Wörter 1"}
 			,{"Lang": "en", "Value": "english words 1"}
 			,{"Lang": "fr", "Value": "mots françaises 1"}

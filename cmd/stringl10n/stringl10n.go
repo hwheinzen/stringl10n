@@ -17,14 +17,6 @@ const (
 	pgmname = "stringl10n"
 )
 
-/*type Var struct {
-	Name string
-	Type string
-}*/
-type Pair struct {
-	Lang  string
-	Value string
-}
 type All struct {
 	Copyright string
 	Package   string
@@ -33,7 +25,15 @@ type All struct {
 		Name string
 		Type string
 	}
-	Texts     map[string][]Pair
+	Funcs     []struct {
+		Name     string
+		Function string
+		Path     string
+	}
+	Texts map[string][]struct {
+		Lang  string
+		Value string
+	}
 }
 
 func main() {
@@ -133,6 +133,8 @@ import (
 	"encoding/json"
 	"log"
 	"text/template"
+{{if ne (len .Funcs) 0}}{{range .Funcs}}{{if ne .Path ""}}
+	"{{.Path}}"{{end}}{{end}}{{end}}
 )
 
 // Type l10nPair is used during string localization.
@@ -146,6 +148,7 @@ var l10nMap = make(map[string][]l10nPair, 10)
 
 // l10nTranslate returns a translation of a given text
 // according to the chosen language code.
+// Errors are logged.
 func l10nTranslate(key, lang string) (value string) {
 	pairs, ok := l10nMap[key]
 	if !ok {
@@ -181,10 +184,15 @@ type Varser interface {
 // l10nSubstitute resolves text/template expressions and returns
 // the changed text string. Variables in these text/template 
 // expressions are substituted by values.
+// Errors are logged.
 func l10nSubstitute(tmpl string, vars Varser) (out string) {
 
-	t := template.New("tmpl")
-	_, err :=t.Parse(tmpl)
+	t := template.New("tmpl"){{if eq (len .Funcs) 0}}
+	_, err := t.Parse(tmpl){{else}}
+	funcMap := template.FuncMap { {{range .Funcs}}
+		"{{.Name}}": {{.Function}},{{end}}
+	}
+	_, err := t.Funcs(funcMap).Parse(tmpl){{end}}
 	if err != nil {
 		log.Print(err)
 	}
@@ -238,11 +246,11 @@ var l10nJSON = `
 
 func makeTestCode(all All) {
 
-	for k, v :=range all.Texts {
+	for k, v := range all.Texts {
 		for i, val := range v {
 			v[i].Value = strings.Replace(val.Value, `"`, "\\\"", -1)
 		}
-		delete(all.Texts, k) 
+		delete(all.Texts, k)
 		k = strings.Replace(k, `"`, "\\\"", -1)
 		all.Texts[k] = v
 	}

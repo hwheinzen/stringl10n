@@ -32,8 +32,12 @@ const (
 // - Change package name
 // - Change GenFile name (optional)
 // - Delete entries which need no translation
-// - Add translations
-// - Add all variables from template expressions to Vars
+// - Add translations to Texts
+// - Add variables from template expressions to Vars
+//  (if needed)
+// - Add functions from template expressions to Funcs
+//   (if needed)
+//   (identical paths only once)
 // - Remove all comments (JSON doesn't like them)
 //   including these introductory lines
 // - Save with a new file name
@@ -46,6 +50,11 @@ const (
 	,"Vars": [
 			{ "Name": "", "Type": ""}
 			,{"Name": "", "Type": ""}
+	]
+
+	,"Funcs": [
+			{ "Name": "", "Function": "", "Path": ""}
+			,{"Name": "", "Function": ""}
 	]
 
 	,"Texts": {

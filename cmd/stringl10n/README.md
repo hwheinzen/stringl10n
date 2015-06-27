@@ -5,6 +5,8 @@ This command generates two source files that can be included in a Go project:
 - one that provides functions for translating strings and for variable substitution
 - one that provides a unit test
 
+Errors during translation/substitution are logged.
+
 ### Limitations
 There is no plural handling.
 
@@ -18,22 +20,13 @@ Scan your projects code base for string literals, and map these strings with the
 
 ```
 {
-	"Copyright": "2015 Itts Mee"
-	,"Package":  "example"
-	,"GenFile":  "stringl10n_generated.go"
-
-	,"Texts":	{
-		"programmer's words 1": [
-			{ "Lang": "de", "Value": "deutsche Wörter 1"}
-			,{"Lang": "en", "Value": "english words 1"}
-			,{"Lang": "fr", "Value": "mots françaises 1"}
+...
+		"programmer's words": [
+			{ "Lang": "de", "Value": "deutsche Wörter"}
+			,{"Lang": "en", "Value": "english words"}
+			,{"Lang": "fr", "Value": "mots françaises"}
 		]
-		,"programmer's words 2": [
-			{ "Lang": "de", "Value": "deutsche Wörter 2"}
-			,{"Lang": "en", "Value": "english words 2"}
-			,{"Lang": "fr", "Value": "mots françaises 2"}
-		]
-	}
+...
 }
 ```
 
@@ -47,5 +40,8 @@ You can now use function t, for example:
 
 `	err := errors(t("programmer's words 1", "de"))`
 
-After translating you can substitute text/template expressions inside
-the string with matching variables. More info is in the API docs.
+After translating you can substitute text/template expressions in
+the string with matching variables. 
+You can let stringl10n register fuctions to the template.FuncMap,
+so any kind of formatting is possible.
+More info is in the API docs.

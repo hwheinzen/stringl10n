@@ -6,11 +6,7 @@
 // DO NOT EDIT.
 // CHANGES WILL BE LOST AFTER NEXT //go:generate stringl10n ...
 
-/*
- stringl10n_generated.go contains all localized Strings and a set method.
-*/
-
-package example
+package main
 
 import (
 	"testing"
@@ -27,20 +23,16 @@ type tTest struct {
 
 var tTests = []tTest{ 
 	{
-		in: InT{key: ":TCP port (optional)", lang: "de"},
-		out: ":Port dieses TCP-Servers",
+		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "en"},
+		out: "One: {{printf \"%d\" .I1}} Two: {{trimr (printf \"%f\" .Fl1) \"0\"}}",
 	},
 	{
-		in: InT{key: ":TCP port (optional)", lang: "en"},
-		out: ":TCP port (optional)",
+		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "de"},
+		out: "Zwei: {{trimr (replace (printf \"%f\" .Fl1) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}",
 	},
 	{
-		in: InT{key: "[address]:port of the data server", lang: "de"},
-		out: "[Adresse]:Port des Datenservers",
-	},
-	{
-		in: InT{key: "[address]:port of the data server", lang: "en"},
-		out: "[address]:port of the data server",
+		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "ex"},
+		out: "Struktur: {{print .S1}}",
 	},
 	{
 		in: InT{key: "address of the data server is missing", lang: "de"},
@@ -51,14 +43,6 @@ var tTests = []tTest{
 		out: "address of the data server is missing",
 	},
 	{
-		in: InT{key: "config file name", lang: "de"},
-		out: "Konfig-Dateiname (MUSS)",
-	},
-	{
-		in: InT{key: "config file name", lang: "en"},
-		out: "config file name",
-	},
-	{
 		in: InT{key: "help", lang: "de"},
 		out: "Hilfe",
 	},
@@ -66,16 +50,9 @@ var tTests = []tTest{
 		in: InT{key: "help", lang: "en"},
 		out: "help",
 	},
-	{
-		in: InT{key: "listening port is missing", lang: "de"},
-		out: "TCP-Port dieses Servers fehlt",
-	},
-	{
-		in: InT{key: "listening port is missing", lang: "en"},
-		out: "listening port is missing",
-	},
 }
 
+// TestT runs tests for function t.
 func TestT(test *testing.T) {
 	for _, v := range tTests {
 		temp := t(v.in.key, v.in.lang)

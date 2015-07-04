@@ -36,12 +36,17 @@ Add one line to your go code:
 
 Run `go generate`.
 
-You can now use function t, for example:
+You can now use these functions:
 
-`	err := errors(t("programmer's words 1", "de"))`
+`func l10nTranslate(key, lang string) (value string)`
 
-After translating you can substitute text/template expressions in
-the string with matching variables. 
-You can let stringl10n register fuctions to the template.FuncMap,
-so any kind of formatting is possible.
+`func l10nSubstitute(tmpl string, vars Varser) (out string)`
+
+l10nTranslate returns the matching string in the requested language.
+l10nSubstitute returns the string with placeholders replaced by the matching variables. 
+
+You can also let stringl10n register fuctions to the template.FuncMap, so any kind of formatting is possible.
 More info is in the API docs.
+
+### TODO
+Generate more tests.

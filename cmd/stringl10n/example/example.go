@@ -24,22 +24,19 @@ func main() {
 
 	fmt.Println("  :", xerr.Error())
 
-	trans := t(xerr.Error(), "en")
+	trans := l10nTranslate(xerr.Error(), "en")
 	subst := l10nSubstitute(trans, xerr)
 	fmt.Println("en:", subst)
 
-	trans = t(xerr.Error(), "de")
+	trans = l10nTranslate(xerr.Error(), "de")
 	subst = l10nSubstitute(trans, xerr)
 	fmt.Println("de:", subst)
 
-	trans = t(xerr.Error(), "XX")
-	fmt.Println("XX:", trans)
-	subst = l10nSubstitute(trans, xerr)
-	fmt.Println("XX:", subst)
-
-	trans = t(xerr.Error(), "ex")
+	trans = l10nTranslate(xerr.Error(), "ex")
 	subst = l10nSubstitute(trans, xerr)
 	fmt.Println("ex:", subst)
+
+	trans = l10nTranslate(xerr.Error(), "XX")
 }
 
 func makeXerror() (xerr mist.XError) {

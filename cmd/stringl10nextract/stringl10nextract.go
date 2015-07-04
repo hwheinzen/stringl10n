@@ -66,9 +66,9 @@ const (
 var oFile *os.File
 
 func main() {
-	root, out := args()
+	args()
 
-	err := createOutFile(root, out)
+	err := createOutFile(argRoot, argOut)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -104,15 +104,19 @@ func createOutFile(dir, out string) (err error) {
 }
 
 func visitFile(path string, fi os.FileInfo, err error) error {
-	if err == nil && isGoFile(fi) { // only .go files
-		if path == fi.Name() { // no subdirs
+	if strings.Contains(path, "/cmd/go/testdata") {
+		return err
+	}
+
+	if err == nil && isGoFile(fi) {
+		if argDeep || path == fi.Name() {
 			err = processInFile(path)
 		}
 	}
-	if err != nil {
+	//if err != nil {
 		return err
-	}
-	return nil
+	//}
+	//return nil
 }
 
 func isGoFile(fi os.FileInfo) bool {
@@ -121,7 +125,7 @@ func isGoFile(fi os.FileInfo) bool {
 	return !fi.IsDir() &&
 		!strings.HasPrefix(name, ".") &&
 		strings.HasSuffix(name, ".go") &&
-		!strings.Contains(name, "_test.") &&
+		!strings.Contains(name, "test.") &&
 		!strings.Contains(name, "_generated")
 }
 
@@ -134,7 +138,7 @@ func processInFile(path string) (err error) {
 		return
 	}
 
-	// Inspect the AST and print string literals.
+	// Inspect the AST and process string literals.
 	ast.Inspect(
 		f,
 		func(n ast.Node) bool {
@@ -144,32 +148,54 @@ func processInFile(path string) (err error) {
 					return false
 				}
 			case *ast.BasicLit:
-
 				if x.Kind == token.STRING {
-
-					runes := []rune(x.Value)
-					if len(runes) < 5 { // probably not worth translating
-						return false
-					}
-					ok := false
-					for _, v := range runes {
-						if unicode.IsLetter(v) { // letters inside?
-							ok = true
-							break
-						}
-					}
-					if !ok { // No. nothing to translate
-						return false
-					}
-
-					fmt.Fprintf(oFile, "\t\t,%s: [\t\t// %s\n", x.Value, fset.Position(n.Pos()))
-					fmt.Fprintln(oFile, "\t\t\t{ \"Lang\":\"en\",\"Value\":\"\"}")
-					fmt.Fprintln(oFile, "\t\t\t,{\"Lang\":\"  \",\"Value\":\"\"}")
-					fmt.Fprintln(oFile, "\t\t]")
+					return processString(n, fset, x.Value)
 				}
 			}
 			return true
 		},
 	)
 	return
+}
+
+// processString prints relevant strings JSON-formatted to the output file.
+func processString(n ast.Node, fset *token.FileSet, s string) bool {
+	runes := []rune(s)
+	if len(runes) < argMin + 2 { // probably not worth translating
+		return false
+	}
+	if len(runes) > argMax + 2 { // probably not intended for translation
+		return false
+	}
+
+	ok := false
+	for _, v := range runes {
+		if unicode.IsLetter(v) { // letters inside?
+			ok = true
+			break
+		}
+	}
+	if !ok {
+		return false
+	}
+
+	if argKeywords != nil {
+		ok = false
+		for _, v := range argKeywords {
+			if strings.Contains(s, v) { // keyword inside?
+				ok = true
+				break
+			}
+		}
+	}
+	if !ok {
+		return false
+	}
+
+	fmt.Fprintf(oFile, "\t\t,%s: [\t\t// %s\n", s, fset.Position(n.Pos()))
+	fmt.Fprintln(oFile, "\t\t\t{ \"Lang\":\"en\",\"Value\":\"\"}")
+	fmt.Fprintln(oFile, "\t\t\t,{\"Lang\":\"de\",\"Value\":\"\"}")
+	fmt.Fprintln(oFile, "\t\t]")
+
+	return true
 }

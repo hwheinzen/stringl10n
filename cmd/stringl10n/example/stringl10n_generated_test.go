@@ -24,11 +24,11 @@ type tTest struct {
 var tTests = []tTest{ 
 	{
 		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "en"},
-		out: "One: {{printf \"%d\" .I1}} Two: {{trimr (printf \"%f\" .Fl1) \"0\"}}",
+		out: "One: {{printf \"%d\" .I1}} Two: {{trimright (printf \"%f\" .Fl1) \"0\"}}",
 	},
 	{
 		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "de"},
-		out: "Zwei: {{trimr (replace (printf \"%f\" .Fl1) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}",
+		out: "Zwei: {{trimright (replace (printf \"%f\" .Fl1 | ) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}",
 	},
 	{
 		in: InT{key: "1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}", lang: "ex"},

@@ -8,18 +8,17 @@
 // First source file provides functions for string translations
 // and variable substitution and defines an interface:
 //
-//  func l10nTranslate(in, lang string) (out string) // alias: t
+//  func l10nTranslate(in, lang string) (out string)
 //  func l10nSubstitute(tmpl string, vars Varser) (out string)
 //
 //  type Varser interface {
-//      // Vars returns Name-Value-Pairs.
-//      Vars() []struct{
+//      Vars() []struct{ // Vars returns Name-Value-Pairs.
 //          Name string
 //          Value interface{}
 //      }
 //  }
 //
-// Second source file provides a unit test.
+// Second source file provides a unit tests.
 //
 // Information must be passed in via a JSON file (e.g. example.json):
 /*

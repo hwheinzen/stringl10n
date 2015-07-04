@@ -132,8 +132,7 @@ package {{.Package}}
 import (
 	"encoding/json"
 	"log"
-	"text/template"
-{{if ne (len .Funcs) 0}}{{range .Funcs}}{{if ne .Path ""}}
+	"text/template" {{if ne (len .Funcs) 0}}{{range .Funcs}}{{if ne .Path ""}}
 	"{{.Path}}"{{end}}{{end}}{{end}}
 )
 
@@ -152,7 +151,7 @@ var l10nMap = make(map[string][]l10nPair, 10)
 func l10nTranslate(key, lang string) (value string) {
 	pairs, ok := l10nMap[key]
 	if !ok {
-		log.Print("No entry for (text): " + key)
+		log.Print("l10nTranslate: No entry for key: ", key)
 		return key
 	}
 	for _, v := range pairs {
@@ -160,12 +159,9 @@ func l10nTranslate(key, lang string) (value string) {
 			return v.Value
 		}
 	}
-	log.Print("No entry for (language/text): " + lang + " / " + key)
+	log.Print("l10nTranslate: language: ", lang, " not defined for key: ", key)
 	return key
 }
-
-// t conveniently points to the translate function.
-var t = l10nTranslate
 
 // l10nVars declares all variables needed for substitution.
 type l10nVars struct { {{range .Vars}}
@@ -175,7 +171,7 @@ type l10nVars struct { {{range .Vars}}
 // Varser interface has a method that returns
 // Name-string/Value-interface{} pairs.
 type Varser interface {
-	Vars() []struct{
+	Vars() []struct{ // Vars returns Name-Value-Pairs
 		Name string
 		Value interface{}
 	}
@@ -203,12 +199,12 @@ func l10nSubstitute(tmpl string, vars Varser) (out string) {
 		case "{{.Name}}":
 			tmp, ok := v.Value.({{.Type}})
 			if !ok {
-				log.Printf("False type for variable {{.Name}}, expected: {{.Type}}, got: %T\n", v.Value)
+				log.Printf("l10nSubstitute: False type for variable {{.Name}}, expected: {{.Type}}, got: %T\n", v.Value)
 				break
 			}
 			all.{{.Name}} = tmp{{end}}
 		default:
-			log.Printf("Variable %s not declared\n", v.Name)			
+			log.Printf("l10nSubstitute: Variable %s not declared\n", v.Name)			
 		}
 	}
 	

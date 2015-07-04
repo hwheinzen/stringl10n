@@ -11,13 +11,13 @@
 
 	,"Funcs": [
 			{ "Name": "replace", "Function": "strings.Replace", "Path": "strings"}
-			,{"Name": "trimr", "Function": "strings.TrimRight"}
+			,{"Name": "trimright", "Function": "strings.TrimRight"}
 	]
 
 	,"Texts": {
 		"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}": [
-			{ "Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimr (printf \"%f\" .Fl1) \"0\"}}"}
-			,{"Lang":"de","Value":"Zwei: {{trimr (replace (printf \"%f\" .Fl1) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"}
+			{ "Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimright (printf \"%f\" .Fl1) \"0\"}}"}
+			,{"Lang":"de","Value":"Zwei: {{trimright (replace (printf \"%f\" .Fl1 | ) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"}
 			,{"Lang":"ex","Value":"Struktur: {{print .S1}}"}
 		]
 		,"address of the data server is missing": [

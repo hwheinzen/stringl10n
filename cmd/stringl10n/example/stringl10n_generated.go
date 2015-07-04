@@ -17,12 +17,9 @@ package main
 import (
 	"encoding/json"
 	"log"
-	"text/template"
-
+	"text/template" 
 	"strings"
 )
-
-//var _ = strings.Replace  // clumsy workaround to ensure strings is imported (TODO)
 
 // Type l10nPair is used during string localization.
 type l10nPair struct {
@@ -39,7 +36,7 @@ var l10nMap = make(map[string][]l10nPair, 10)
 func l10nTranslate(key, lang string) (value string) {
 	pairs, ok := l10nMap[key]
 	if !ok {
-		log.Print("No entry for (text): " + key)
+		log.Print("l10nTranslate: No entry for key: ", key)
 		return key
 	}
 	for _, v := range pairs {
@@ -47,12 +44,9 @@ func l10nTranslate(key, lang string) (value string) {
 			return v.Value
 		}
 	}
-	log.Print("No entry for (language/text): " + lang + " / " + key)
+	log.Print("l10nTranslate: language: ", lang, " not defined for key: ", key)
 	return key
 }
-
-// t conveniently points to the translate function.
-var t = l10nTranslate
 
 // l10nVars declares all variables needed for substitution.
 type l10nVars struct { 
@@ -64,7 +58,7 @@ type l10nVars struct {
 // Varser interface has a method that returns
 // Name-string/Value-interface{} pairs.
 type Varser interface {
-	Vars() []struct{
+	Vars() []struct{ // Vars returns Name-Value-Pairs
 		Name string
 		Value interface{}
 	}
@@ -79,7 +73,7 @@ func l10nSubstitute(tmpl string, vars Varser) (out string) {
 	t := template.New("tmpl")
 	funcMap := template.FuncMap { 
 		"replace": strings.Replace,
-		"trimr": strings.TrimRight,
+		"trimright": strings.TrimRight,
 	}
 	_, err := t.Funcs(funcMap).Parse(tmpl)
 	if err != nil {
@@ -92,26 +86,26 @@ func l10nSubstitute(tmpl string, vars Varser) (out string) {
 		case "I1":
 			tmp, ok := v.Value.(int)
 			if !ok {
-				log.Printf("False type for variable I1, expected: int, got: %T\n", v.Value)
+				log.Printf("l10nSubstitute: False type for variable I1, expected: int, got: %T\n", v.Value)
 				break
 			}
 			all.I1 = tmp
 		case "Fl1":
 			tmp, ok := v.Value.(float64)
 			if !ok {
-				log.Printf("False type for variable Fl1, expected: float64, got: %T\n", v.Value)
+				log.Printf("l10nSubstitute: False type for variable Fl1, expected: float64, got: %T\n", v.Value)
 				break
 			}
 			all.Fl1 = tmp
 		case "S1":
 			tmp, ok := v.Value.(Struktur)
 			if !ok {
-				log.Printf("False type for variable S1, expected: Struktur, got: %T\n", v.Value)
+				log.Printf("l10nSubstitute: False type for variable S1, expected: Struktur, got: %T\n", v.Value)
 				break
 			}
 			all.S1 = tmp
 		default:
-			log.Printf("Variable %s not declared\n", v.Name)			
+			log.Printf("l10nSubstitute: Variable %s not declared\n", v.Name)			
 		}
 	}
 	
@@ -145,4 +139,4 @@ func init() {
 	l10nJSON = "" // no longer needed
 }
 
-var l10nJSON = `{"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}":[{"Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimr (printf \"%f\" .Fl1) \"0\"}}"},{"Lang":"de","Value":"Zwei: {{trimr (replace (printf \"%f\" .Fl1) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"},{"Lang":"ex","Value":"Struktur: {{print .S1}}"}],"address of the data server is missing":[{"Lang":"de","Value":"Adresse des Daten-Servers fehlt"},{"Lang":"en","Value":"address of the data server is missing"}],"help":[{"Lang":"de","Value":"Hilfe"},{"Lang":"en","Value":"help"}]}`
+var l10nJSON = `{"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}":[{"Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimright (printf \"%f\" .Fl1) \"0\"}}"},{"Lang":"de","Value":"Zwei: {{trimright (replace (printf \"%f\" .Fl1 | ) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"},{"Lang":"ex","Value":"Struktur: {{print .S1}}"}],"address of the data server is missing":[{"Lang":"de","Value":"Adresse des Daten-Servers fehlt"},{"Lang":"en","Value":"address of the data server is missing"}],"help":[{"Lang":"de","Value":"Hilfe"},{"Lang":"en","Value":"help"}]}`

@@ -28,15 +28,15 @@
     ,"GenFile":  "stringl10n_generated.go"
 
     ,"Vars": [
-            { "Name": "I1", "Type": "int"}
-            ,{"Name": "F1", "Type": "float64"}
+            { "Name": "Int", "Type": "int"}
+            ,{"Name": "Flo", "Type": "float64"}
         ]
 
     ,"Funcs": [
             { "Name": "replace", "Function": "strings.Replace", "Path": "strings"}
     ]
 
-    ,"Text": {
+    ,"Texts": {
         "programmer's words 1": [
             { "Lang": "de", "Value": "deutsche Wörter 1"}
             ,{"Lang": "en", "Value": "english words 1"}
@@ -47,9 +47,9 @@
             ,{"Lang": "en", "Value": "english words 2"}
             ,{"Lang": "fr", "Value": "mots françaises 2"}
         ]
-        ,"A: {{printf \"%d\" .I1}} B: {{printf \"%f\" .F1}}": [
-            { "Lang":"en","Value":"A: {{printf \"%d\" .I1}} B: {{printf \"%f\" .F1}}"}
-            ,{"Lang":"de","Value":"A: {{replace (printf \"%f\" .F1) \".\" \",\" -1}} A: {{printf \"%d\" .I1}}"}
+        ,"A: {{printf \"%d\" .Int}} B: {{printf \"%f\" .Flo}}": [
+            { "Lang":"en","Value":"A: {{printf \"%d\" .Int}} B: {{printf \"%f\" .Flo}}"}
+            ,{"Lang":"de","Value":"A: {{replace (printf \"%f\" .Flo) \".\" \",\" -1}} A: {{printf \"%d\" .Int}}"}
         ]
     }
  }
@@ -60,15 +60,13 @@
 //
 // • Change GenFile name (optional).
 //
-// • Delete entries which need no translation.
-//
 // • Add translations to Texts.
 //
 // • Add variables from template expressions to Vars.
 //
-// • Add functions from template expressions to Funcs, but identical paths only once.
+// • Add functions from template expressions to Funcs, but identical paths only once. Path means import path.
 //
-// • Remove all comments including these introductory lines (JSON doesn't like them).
+// • Remove all comments (JSON doesn't like them).
 //
 //
 // Usage:

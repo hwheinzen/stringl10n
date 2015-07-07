@@ -18,7 +18,11 @@ Provided that your Go environment is ready, i.e. $GOPATH is set, you need to:
 ### Usage
 In your project directory:
 
-`$ stringl10nextract -o=example.txt`
+`$ find . | stringl10nextract > example.txt`
+
+or:
+
+`$ stringl10nextract -root=. -o=example.txt`
 
 and you'll get a file `example.txt` that looks something like:
 

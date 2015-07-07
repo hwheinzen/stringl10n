@@ -7,10 +7,13 @@
 // Data must be edited.
 //
 // Usage:
-//  $ stringl10nextract -o=example.txt
+//  $ find . | stringl10nextract > example.txt
+// or:
+//  $ stringl10nextract -root=. -o=example.txt
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -67,16 +70,16 @@ var oFile *os.File
 
 func main() {
 	args()
-
-	err := createOutFile(argRoot, argOut)
+	err := createOutFile()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func createOutFile(dir, out string) (err error) {
-	if out != "" {
-		oFile, err = os.Create(out)
+func createOutFile() (err error) {
+
+	if argOut != "" {
+		oFile, err = os.Create(argOut)
 		if err != nil {
 			return
 		}
@@ -90,9 +93,21 @@ func createOutFile(dir, out string) (err error) {
 		return
 	}
 
-	err = filepath.Walk(dir, visitFile) // walk all files
-	if err != nil {
-		return
+	if argRoot != "" { // walk from argRoot
+		err = filepath.Walk(argRoot, visitFile)
+		if err != nil {
+			return
+		}
+	} else {
+		s := bufio.NewScanner(os.Stdin)
+		for s.Scan() { // use stdin
+			path := s.Text()
+			fi, err := os.Stat(path)
+			if err != nil {
+				return err
+			}
+			err = visitFile(path, fi, err)
+		}
 	}
 
 	_, err = oFile.Write([]byte(foot))
@@ -104,19 +119,15 @@ func createOutFile(dir, out string) (err error) {
 }
 
 func visitFile(path string, fi os.FileInfo, err error) error {
-	if strings.Contains(path, "/cmd/go/testdata") {
-		return err
+	if len(path) > 1 && path[:2] == "./" {
+		path = path[2:]
 	}
-
 	if err == nil && isGoFile(fi) {
-		if argDeep || path == fi.Name() {
+		if argDeep || path == fi.Name() { // dive into subdir or not
 			err = processInFile(path)
 		}
 	}
-	//if err != nil {
-		return err
-	//}
-	//return nil
+	return err
 }
 
 func isGoFile(fi os.FileInfo) bool {
@@ -161,16 +172,16 @@ func processInFile(path string) (err error) {
 // processString prints relevant strings JSON-formatted to the output file.
 func processString(n ast.Node, fset *token.FileSet, s string) bool {
 	runes := []rune(s)
-	if len(runes) < argMin + 2 { // probably not worth translating
+	if len(runes) < argMin+2 { // probably not worth translating
 		return false
 	}
-	if len(runes) > argMax + 2 { // probably not intended for translation
+	if len(runes) > argMax+2 { // probably not intended for translation
 		return false
 	}
 
 	ok := false
 	for _, v := range runes {
-		if unicode.IsLetter(v) { // letters inside?
+		if unicode.IsLetter(v) { // letter inside?
 			ok = true
 			break
 		}

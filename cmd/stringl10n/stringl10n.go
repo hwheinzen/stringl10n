@@ -123,8 +123,8 @@ var code = `// Copyright {{.Copyright}}. All rights reserved.
 
 /*
  {{.GenFile}} contains all localized strings and
- functions for translating (t alias l10nTranslate)
- and variable substitution (l10nSubstitute).
+ functions for translating (l10nTranslate)
+ and substituting variables (l10nSubstitute).
 */
 
 package {{.Package}}
@@ -230,6 +230,7 @@ func (o l10nPointer) Write(p []byte) (n int, err error) {
 	return
 }
 
+// init fills the translation map.
 func init() {
 	err := json.Unmarshal([]byte(l10nJSON), &l10nMap)
 	if err != nil {

@@ -64,5 +64,4 @@ You'll get a file `example.json` that looks something like:
 ```
 
 ### TODO
-- init Vars and Funcs: Name comes from template expressions
 - think about workflow

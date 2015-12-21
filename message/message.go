@@ -18,7 +18,7 @@ type Message struct {
 }
 
 // New returns the address of a new message with the fix part set to text;
-// text may contain placeholders.
+// text may contain placeholders like text/template expressions.
 func New(text string) *Message {
 	return &Message{text: text}
 }
@@ -31,15 +31,15 @@ func (m *Message) SetDetails(d string) {
 
 // AddVar adds a new Name/Value pair to the message which is meant
 // to later on substitute a placeholder in the fix part.
-func (m *Message) AddVar(n string, v interface{}) {
+func (m *Message) AddVar(name string, value interface{}) {
 	m.vars = append(
 		m.vars,
 		struct {
 			Name  string
 			Value interface{}
 		}{
-			Name:  n,
-			Value: v,
+			Name:  name,
+			Value: value,
 		},
 	)
 }

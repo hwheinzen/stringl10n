@@ -7,45 +7,47 @@ package main
 import (
 	"fmt"
 
-	"github.com/hwheinzen/mist" // extended error
+	"github.com/hwheinzen/stringl10n/message"
 )
 
-var ganzzahl int = 42
-var gleitkomma float64 = 0.815
-type Struktur struct {
-	Teil1 string
-	Teil2 string
+var integer int = 42
+var floatie float64 = 0.815
+type Struct struct {
+	Part1 string
+	Part2 string
 }
-var struk = Struktur{"Teil1", "Teil2"}
+var structure = Struct{"Pürt1", "Pürt2"}
 	
 
 func main() {
-	xerr := makeXerror()
 
-	fmt.Println("  :", xerr.Error())
+	var err error
 
-	trans := l10nTranslate(xerr.Error(), "en")
-	subst := l10nSubstitute(trans, xerr)
+	err = makeErrorMessage()
+	fmt.Println("  :", err.Error())
+
+	var trans, subst string
+
+	trans = l10nTrans(err.Error(), "en")
+	subst = l10nSubst(trans, err.(*message.Message))
 	fmt.Println("en:", subst)
 
-	trans = l10nTranslate(xerr.Error(), "de")
-	subst = l10nSubstitute(trans, xerr)
+	trans = l10nTrans(err.Error(), "de")
+	subst = l10nSubst(trans, err.(*message.Message))
 	fmt.Println("de:", subst)
 
-	trans = l10nTranslate(xerr.Error(), "ex")
-	subst = l10nSubstitute(trans, xerr)
-	fmt.Println("ex:", subst)
+	trans = l10nTrans(err.Error(), "xx")
+	subst = l10nSubst(trans, err.(*message.Message))
+	fmt.Println("xx:", subst)
 
-	trans = l10nTranslate(xerr.Error(), "XX")
+	trans = l10nTrans(err.Error(), "unknown")
+	fmt.Println("default:", trans)
 }
 
-func makeXerror() (xerr mist.XError) {
-	xerr = mist.New(
-		"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}",
-		"ignored",
-	).(mist.XError) // Typzusicherung, weil mist.New nur "error" zurückgibt
-	xerr.AddVar("I1", ganzzahl)
-	xerr.AddVar("Fl1", gleitkomma)
-	xerr.AddVar("S1", struk)
-	return
+func makeErrorMessage() error {
+	msg := message.New("Int: {{printf \"%d\" .Int}} Float: {{printf \"%f\" .Flo}}")
+	msg.AddVar("Int", integer)
+	msg.AddVar("Flo", floatie)
+	msg.AddVar("Str", structure) // language xx only
+	return msg
 }

@@ -10,12 +10,12 @@ import (
 	"os"
 )
 
-// Arguments
+// arguments
 // ---------
-// -json	<strings file name>	(compulsory)
+// -json	<strings file name>	(MUST)
 // -help
 //
-// Example
+// example
 // -------
 // $ stringl10n -json=example.json
 //

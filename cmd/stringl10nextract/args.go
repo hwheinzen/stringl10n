@@ -7,32 +7,41 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
+	"regexp"
 	"strings"
 )
 
-// Arguments
+// arguments
 // ---------
-// -root	<source directory>	(default stdin)
+// -dir		<source directory>	(default stdin)
 // -o		<output file>		(default stdout)
+// -lang	programmers language code	(default none)
 // -deep	<include subdirs>	(default false)
 // -min		<min. length>		(default 3)
 // -max		<max. length>		(default 200)
 // -deep	<include subdirs>	(default false)
 // -inclist	<only if string contains one of the words>
+// -regexp	<only if string conforms to regexp>
 // -help
 //
-// Example
+// example
 // -------
-// $ stringl10nextract -root=$GOPATH/hawe/bgzdb
+// $ stringl10nextract -dir=$GOPATH/hawe/bgzdb
 
+// global variables
 var (
-	argRoot     string
+	argDir      string
 	argOut      string
-	argKeywords []string
+	argLang     string
+	argKeywords []string // from inclist
+	argRegexp   string
 	argDeep     bool
 	argMin      int
 	argMax      int
+
+	gRgx *regexp.Regexp
 )
 
 func args() {
@@ -40,13 +49,15 @@ func args() {
 	var inclist string
 	var help bool
 
-	flag.StringVar(&argRoot, "root", "", "source directory")
+	flag.StringVar(&argDir, "dir", "", "directory instead of stdin")
 	flag.StringVar(&argOut, "o", "", "output file instead of stdout")
-	flag.StringVar(&inclist, "inclist", "", "only strings which contain these")
+	flag.StringVar(&argLang, "lang", "", "programmers language, e.g. en")
+	flag.StringVar(&inclist, "inclist", "", "string must contain these")
+	flag.StringVar(&argRegexp, "regexp", "", "string must conforms")
 	flag.BoolVar(&argDeep, "deep", false, "dive into sub-directories")
 	flag.IntVar(&argMin, "min", 3, "string contains at least min runes")
 	flag.IntVar(&argMax, "max", 200, "string contains at most max runes")
-	flag.BoolVar(&help, "help", false, "usage information")
+	flag.BoolVar(&help, "help", false, "usage")
 
 	flag.Usage = argsUsage
 	flag.Parse()
@@ -60,10 +71,18 @@ func args() {
 		argKeywords = strings.Split(inclist, " ")
 	}
 
+	var err error
+	if argRegexp != "" {
+		gRgx, err = regexp.Compile(argRegexp)
+		if err != nil {
+			log.Fatalln(pgmname+":", err)
+		}
+	}
+
 	return
 }
 
 func argsUsage() {
-	fmt.Fprintln(os.Stderr, "Usage:", pgmname, "[OPTION]...")
+	fmt.Fprintln(os.Stderr, "usage:", pgmname, "[OPTION]...")
 	flag.PrintDefaults()
 }

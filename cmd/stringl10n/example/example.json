@@ -1,32 +1,24 @@
 {
-	"Copyright": "2015 Itts Mee"
-	,"Package":  "main"
-	,"GenFile":  "stringl10n_generated.go"
+	 "Copyright": "2015 Itts Mee"
+	,"Package":   "main"
+	,"GenFile":   "stringl10n_generated.go"
 
-	,"Vars":     [
-			{ "Name": "I1", "Type": "int"}
-			,{"Name": "Fl1", "Type": "float64"}
-			,{"Name": "S1", "Type": "Struktur"}
-		]
+	,"Vars": [
+		 {"Name": "Int", "Type": "int"}
+		,{"Name": "Flo", "Type": "float64"}
+		,{"Name": "Str", "Type": "Struct"}
+	]
 
 	,"Funcs": [
-			{ "Name": "replace", "Function": "strings.Replace", "Path": "strings"}
-			,{"Name": "trimright", "Function": "strings.TrimRight"}
+		 {"Name": "replace", "Function": "strings.Replace", "Path": "strings"}
+		,{"Name": "trimright", "Function": "strings.TrimRight"}
 	]
 
 	,"Texts": {
-		"1: {{printf \"%d\" .I1}} 2: {{printf \"%f\" .Fl1}}": [
-			{ "Lang":"en","Value":"One: {{printf \"%d\" .I1}} Two: {{trimright (printf \"%f\" .Fl1) \"0\"}}"}
-			,{"Lang":"de","Value":"Zwei: {{trimright (replace (printf \"%f\" .Fl1 | ) \".\" \",\" -1) \"0\"}} Eins: {{printf \"%d\" .I1}}"}
-			,{"Lang":"ex","Value":"Struktur: {{print .S1}}"}
-		]
-		,"address of the data server is missing": [
-			{ "Lang":"de","Value":"Adresse des Daten-Servers fehlt"}
-			,{"Lang":"en","Value":"address of the data server is missing"}
-		]
-		,"help": [
-			{ "Lang":"de","Value":"Hilfe"}
-			,{"Lang":"en","Value":"help"}
+		 "Int: {{printf \"%d\" .Int}} Float: {{printf \"%f\" .Flo}}": [
+			 {"Lang":"en","Value":"Integer: {{printf \"%d\" .Int}} Float: {{trimright (printf \"%f\" .Flo) \"0\"}}"}
+			,{"Lang":"de","Value":"Gleitkomma: {{trimright (replace (printf \"%f\" .Flo | ) \".\" \",\" -1) \"0\"}} Ganzzahl: {{printf \"%d\" .Int}}"}
+			,{"Lang":"xx","Value":"strüktür: {{print .Str}}"}
 		]
 	}
 }

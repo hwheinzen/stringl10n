@@ -56,7 +56,7 @@ type Varser interface {
     }
 }
 ```
-(message.Message satisfies this inteface.)
+(message.Message satisfies this Interface.)
 
 You can let stringl10n register fuctions to the template.FuncMap, so any kind of formatting is possible.
 More info is in the API docs.

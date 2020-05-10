@@ -1,4 +1,4 @@
-// Copyright 2015 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2015-20 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -37,6 +37,11 @@ type l10nPair struct {
 // l10nMap contains all key strings and all translations.
 var l10nMap = make(map[string][]l10nPair, 10)
 
+// L10nTrans exports l10nTrans.
+func L10nTrans(key, lang string) string {
+	return l10nTrans(key, lang)
+}
+
 // l10nTrans returns a translation of a given text
 // according to the chosen language code.
 // Errors are logged.
@@ -71,12 +76,30 @@ type Varser interface {
 	}
 }
 
-// l10nSubst resolves text/template expressions and returns
+// l10nSubst is OBSOLETE. It uses l10nRepl to do the work.
+func l10nSubst(tmpl string, pairs Varser) string {
+	fncname := "l10nSubst"
+
+	return l10nRepl(tmpl, pairs.Vars())
+}
+
+// L10nRepl exports l10nRepl.
+func L10nRepl(tmpl string, vars []struct {
+	Name string
+	Value interface{}
+}) string {
+	return l10nRepl(tmpl, vars)
+}
+
+// l10nRepl resolves text/template expressions and returns
 // the changed text string. Variables in these text/template 
 // expressions are substituted by values.
 // Errors are logged.
-func l10nSubst(tmpl string, pairs Varser) (out string) {
-	fncname := "l10nSubst"
+func l10nRepl(tmpl string, vars []struct {
+	Name string
+	Value interface{}
+}) (out string) {
+	fncname := "l10nRepl"
 
 	t := template.New("tmpl"){{if eq (len .Funcs) 0}}
 	_, err := t.Parse(tmpl){{else}}
@@ -90,17 +113,17 @@ func l10nSubst(tmpl string, pairs Varser) (out string) {
 
 	all := l10nVars{}
 
-	for _, pair := range pairs.Vars() {
+	for _, pair := range vars {
 		switch pair.Name { {{range .Vars}}
 		case "{{.Name}}":
 			tmp, ok := pair.Value.({{.Type}})
 			if !ok {
-				log.Printf(fncname+": false type for variable {{.Name}}, expected: {{.Type}}, got: %T\n", pair.Value)
+				log.Printf(fncname+": false type for {{.Name}}, expected: {{.Type}}, got: %T\n", pair.Value)
 				break
 			}
 			all.{{.Name}} = tmp{{end}}
 		default:
-			log.Printf(fncname+": variable %s not declared\n", pair.Name)			
+			log.Printf(fncname+": %s not declared\n", pair.Name)			
 		}
 	}
 
@@ -112,15 +135,4 @@ func l10nSubst(tmpl string, pairs Varser) (out string) {
 	out = buf.String()
 
 	return
-}
-
-// init fills the translation map.
-func init() {
-	err := json.Unmarshal([]byte(l10nJSON), &l10nMap)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	l10nJSON = "" // no longer needed
-}
-
-var l10nJSON = `
+}`

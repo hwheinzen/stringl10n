@@ -9,14 +9,20 @@
 // and variable substitution and defines an interface:
 //
 //  func l10nTrans(in, lang string) (out string)
-//  func l10nSubst(tmpl string, vars Varser) (out string)
-//
-//  type Varser interface {
-//      Vars() []struct{ // Vars returns Name-Value-Pairs.
+//  func l10nSubst(tmpl string, vars []struct {
 //          Name string
 //          Value interface{}
-//      }
-//  }
+//  }) (out string)
+//
+///Still there but no longer needed:
+/// func l10nSubst(tmpl string, vars Varser) (out string)
+/// type Varser interface {
+///     Vars() []struct{ // Vars returns Name-Value-Pairs.
+///         Name string
+///         Value interface{}
+///     }
+/// }
+///
 //
 // Second source file provides a unit tests.
 //

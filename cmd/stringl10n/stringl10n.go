@@ -28,7 +28,7 @@ type All struct {
 		Name string
 		Type string
 	}
-	Funcs     []struct {
+	Funcs []struct {
 		Name     string
 		Function string
 		Path     string
@@ -38,7 +38,7 @@ type All struct {
 		Value string
 	}
 	// ------------- computed values
-	Generator  string
+	Generator string
 }
 
 func main() {
@@ -151,10 +151,20 @@ func addJSON(filename string, all All) (err error) {
 	defer file.Close()
 
 	// begin raw string
+	_, err = file.Write([]byte(`
+	
+// init fills the translation map.
+func init() {
+	var l10nJSON = `))
+	if err != nil {
+		return
+	}
+
 	_, err = file.Write([]byte("`"))
 	if err != nil {
 		return
 	}
+
 	// turn map Texts into JSON, indent slightly
 	bytes, err := json.MarshalIndent(all.Texts, "", " ")
 	if err != nil {
@@ -165,11 +175,27 @@ func addJSON(filename string, all All) (err error) {
 	if err != nil {
 		return
 	}
+
 	// end raw string
-	_, err = file.Write([]byte("`\n"))
+	_, err = file.Write([]byte("`"))
 	if err != nil {
 		return
 	}
+	_, err = file.Write([]byte(`
+
+	err := json.Unmarshal([]byte(l10nJSON), &l10nMap)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	l10nJSON = "" // no longer needed
+}`))
+	if err != nil {
+		return
+	}
+	//_, err = file.Write([]byte("`\n"))
+	//if err != nil {
+	//	return
+	//}
 
 	return
 }

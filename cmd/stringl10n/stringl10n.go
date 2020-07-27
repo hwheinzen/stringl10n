@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/dullgiulio/jsoncomments"
 )
@@ -22,6 +23,8 @@ const (
 
 type All struct {
 	Copyright string
+	Generator string
+	Generated string
 	Package   string
 	GenFile   string
 	Vars      []struct {
@@ -37,53 +40,43 @@ type All struct {
 		Lang  string
 		Value string
 	}
-	// ------------- computed values
-	Generator string
 }
 
 func main() {
-
 	filename := args()
 
-	all, err := fillStruct(filename)
+	all, err := getAll(filename)
 	if err != nil {
 		log.Fatalln(pgmname+":", err)
 	}
 
-	var name string
-
-	// code
-	name, err = makeCode(all)
-	if err != nil {
-		log.Fatalln(pgmname+":", err)
-	}
-	err = addJSON(name, all)
-	if err != nil {
-		log.Fatalln(pgmname+":", err)
-	}
-	err = gofmt(name)
+	code, err := makeCode(all)
 	if err != nil {
 		log.Fatalln(pgmname+":", err)
 	}
 
-	// testcode
-	name, err = makeTestCode(all)
+	testcode, err := makeTestcode(all)
 	if err != nil {
 		log.Fatalln(pgmname+":", err)
 	}
-	err = gofmt(name)
+
+	err = gofmt(code)
+	if err != nil {
+		log.Fatalln(pgmname+":", err)
+	}
+	err = gofmt(testcode)
 	if err != nil {
 		log.Fatalln(pgmname+":", err)
 	}
 }
 
-func gofmt(filename string) (err error) {
+func gofmt(filename string) error {
 	cmd := exec.Command("gofmt", "-w", filename)
-	err = cmd.Run()
-	return
+	err := cmd.Run()
+	return err
 }
 
-func fillStruct(filename string) (all All, err error) {
+func getAll(filename string) (all All, err error) {
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -113,14 +106,13 @@ func fillStruct(filename string) (all All, err error) {
 	}
 
 	all.Generator = pgmname
+	all.Generated = time.Now().String()[:40]
 
 	return
 }
 
 func makeCode(all All) (filename string, err error) {
-
 	filename = all.GenFile
-
 	file, err := os.Create(filename)
 	if err != nil {
 		return
@@ -128,13 +120,16 @@ func makeCode(all All) (filename string, err error) {
 	defer file.Close()
 
 	t := template.New("code")
-	// parse code template
 	_, err = t.Parse(code)
 	if err != nil {
 		return
 	}
-	// create code from template
 	err = t.Execute(file, all)
+	if err != nil {
+		return
+	}
+
+	err = addJSON(file, all)
 	if err != nil {
 		return
 	}
@@ -142,15 +137,9 @@ func makeCode(all All) (filename string, err error) {
 	return
 }
 
-func addJSON(filename string, all All) (err error) {
+func addJSON(file *os.File, all All) (err error) {
 
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
-	if err != nil {
-		return
-	}
-	defer file.Close()
-
-	// begin raw string
+	// begin init function
 	_, err = file.Write([]byte(`
 	
 // init fills the translation map.
@@ -160,27 +149,24 @@ func init() {
 		return
 	}
 
-	_, err = file.Write([]byte("`"))
+	_, err = file.Write([]byte("`")) // raw string delimiter
+	if err != nil {
+		return
+	}
+	bytes, err := json.MarshalIndent(all.Texts, "", " ") // make JSON + indent
+	if err != nil {
+		return
+	}
+	_, err = file.Write(bytes) // write JSON
+	if err != nil {
+		return
+	}
+	_, err = file.Write([]byte("`")) // raw string delimiter
 	if err != nil {
 		return
 	}
 
-	// turn map Texts into JSON, indent slightly
-	bytes, err := json.MarshalIndent(all.Texts, "", " ")
-	if err != nil {
-		return
-	}
-	// write JSON
-	_, err = file.Write(bytes)
-	if err != nil {
-		return
-	}
-
-	// end raw string
-	_, err = file.Write([]byte("`"))
-	if err != nil {
-		return
-	}
+	// end init function
 	_, err = file.Write([]byte(`
 
 	err := json.Unmarshal([]byte(l10nJSON), &l10nMap)
@@ -192,15 +178,11 @@ func init() {
 	if err != nil {
 		return
 	}
-	//_, err = file.Write([]byte("`\n"))
-	//if err != nil {
-	//	return
-	//}
 
 	return
 }
 
-func makeTestCode(all All) (filename string, err error) {
+func makeTestcode(all All) (filename string, err error) {
 
 	filename = all.GenFile[:len(all.GenFile)-3] + "_test.go"
 
@@ -221,12 +203,10 @@ func makeTestCode(all All) (filename string, err error) {
 	defer file.Close()
 
 	t := template.New("test")
-	// parse testcode template
 	_, err = t.Parse(test)
 	if err != nil {
 		return
 	}
-	// write testcode
 	err = t.Execute(file, all)
 	if err != nil {
 		return

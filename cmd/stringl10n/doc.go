@@ -9,7 +9,7 @@
 // and variable substitution and defines an interface:
 //
 //  func l10nTrans(in, lang string) (out string)
-//  func l10nSubst(tmpl string, vars []struct {
+//  func l10nRepl(tmpl string, vars []struct {
 //          Name string
 //          Value interface{}
 //  }) (out string)

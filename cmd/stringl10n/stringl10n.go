@@ -1,4 +1,4 @@
-// Copyright 2015 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2015-20 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -30,6 +30,7 @@ type All struct {
 	Vars      []struct {
 		Name string
 		Type string
+		Path string
 	}
 	Funcs []struct {
 		Name     string
@@ -174,7 +175,11 @@ func init() {
 		log.Fatalln(err)
 	}
 	l10nJSON = "" // no longer needed
-}`))
+}
+// THIS FILE HAS BEEN GENERATED.
+// DO NOT EDIT.
+// CHANGES WILL DISAPPEAR AFTER NEXT RUN OF {{.Generator}}.
+`))
 	if err != nil {
 		return
 	}

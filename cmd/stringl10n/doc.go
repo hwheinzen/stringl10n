@@ -1,4 +1,4 @@
-// Copyright 2015 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2015-20 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -35,6 +35,7 @@
 
 	,"Vars": [
 		 {"Name": "FNum", "Type": "float64"}
+		 ,{"Name": "Time", "Type": "time.Duration", "Path": "time"}
 	]
 
 	,"Funcs": [

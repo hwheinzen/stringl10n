@@ -1,5 +1,5 @@
 # message
-A message type for Go. 
+A message type for Go -- OBSOLET -- use package mistake instead
 
 Package message provides a message type that keeps
 fix and variable parts of a text message apart.

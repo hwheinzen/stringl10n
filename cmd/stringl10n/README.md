@@ -1,5 +1,5 @@
 # stringl10n
-A simple string localization tool for Go.
+A simple string localization tool -- OBSOLETE -- use l10n instead
 
 This command generates two source files that can be included in a Go project:
 - one that provides functions to translate strings and to substitute variables

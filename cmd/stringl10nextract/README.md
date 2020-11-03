@@ -23,18 +23,20 @@ or:
 `$ stringl10nextract -dir=. -o=example.json`
 
 If you control the source you could prepare all strings you want translated with
-let's say a prefix 'I18N:'. Then try this one:
+let's say a prefix 'PACKAGE:'. Then try this one:
 
-`$ find . | stringl10nextract -regexp=^I18N: > example.json`
+`$ find . | grep .go | stringl10nextract -regexp=^PACKAGE: > tmp.json`
 
-You'll get a file `example.json` that looks something like:
+You'll get a file `tmp.json` that looks something like:
 
 ```
 # ... some instructions here ...
 {
 	 "Copyright": "2015 Itts Mee"
 	,"Package":   "example"
-	,"GenFile":   "stringl10n_generated.go"
+	,"ErrorType": "Err"
+	,"ErrorPref": ""
+	,"GenFile":   "l10n_generated.go"
 
 	,"Vars": [
 			 {"Name": "", "Type": ""}

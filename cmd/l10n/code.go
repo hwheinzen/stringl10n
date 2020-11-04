@@ -76,11 +76,6 @@ func L10nTranslate(key, lang string) (out string, err error) {
 			}
 		}
 	}
-// 	for _, v := range pairs {
-// 		if v.Lang == "en" { // default
-// 			return v.Value, nil
-// 		}
-// 	}
 
 	err = {{.ErrorType}}{
 		Fix: "{{.ErrorPref}}:no {{.Nam2Template}} translation for '{{.NameTemplate}}'",
@@ -125,7 +120,7 @@ func L10nReplace(tmpl string, vars []struct {
 				{"Name", tmpl},
 			},
 		}
-		return "", fmt.Errorf(fnc+err.Error()+":%w", e)
+		return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	allVars := l10nVars{}
@@ -152,7 +147,7 @@ func L10nReplace(tmpl string, vars []struct {
 						{"Nam2", "{{.Type}}"},
 					},
 				}
-				return "", fmt.Errorf(fnc+err.Error()+":%w", e)
+				return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
 			}
 			allVars.{{.Name}} = v{{end}}
 		default:
@@ -178,7 +173,7 @@ func L10nReplace(tmpl string, vars []struct {
 				{"Name", tmpl},
 			},
 		}
-		return "", fmt.Errorf(fnc+err.Error()+":%w", e)
+		return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	return b.String(), nil

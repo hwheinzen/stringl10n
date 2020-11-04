@@ -36,6 +36,7 @@ func args(buildtime string) (jsonFile, lang string) {
 	flag.BoolVar(&help, "help", false, "Usage information")
 
 	flag.StringVar(&jsonFile, "json", "", "input file name")
+
 	flag.StringVar(&lang, "lang", "en", "language of error messages")
 
 	flag.Parse()

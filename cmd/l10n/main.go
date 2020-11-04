@@ -17,9 +17,7 @@ import (
 	. "github.com/hwheinzen/stringl10n/mistake"
 )
 
-const (
-	pgm = "l10n"
-)
+const pgm = "l10n"
 
 type All struct {
 	Copyright string
@@ -105,7 +103,7 @@ func getAll(jsonFile string) (all All, err error) {
 				{"Name", jsonFile},
 			},
 		}
-		return all, fmt.Errorf(fnc+err.Error()+":%w", e)
+		return all, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	defer file.Close()
 
@@ -123,7 +121,7 @@ func getAll(jsonFile string) (all All, err error) {
 				{"Name", jsonFile},
 			},
 		}
-		return all, fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return all, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	if all.Copyright == "" {
@@ -220,7 +218,7 @@ func makeCode(all All) (codeFn string, err error) {
 				{"Name", codeFn},
 			},
 		}
-		return codeFn, fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	defer file.Close()
 
@@ -236,7 +234,7 @@ func makeCode(all All) (codeFn string, err error) {
 				{"Name", "code"},
 			},
 		}
-		return codeFn, fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	err = t.Execute(file, all)
 	if err != nil {
@@ -249,7 +247,7 @@ func makeCode(all All) (codeFn string, err error) {
 				{"Name", "code"},
 			},
 		}
-		return codeFn, fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	err = addTexts(file, all)
@@ -282,7 +280,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	_, err = file.Write([]byte("`")) // raw string delimiter
@@ -296,7 +294,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	bytes, err := json.MarshalIndent(all.Texts, "", " ") // JSON + indent
 	if err != nil {
@@ -309,7 +307,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	_, err = file.Write(bytes) // write JSON
 	if err != nil {
@@ -322,7 +320,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	_, err = file.Write([]byte("`")) // raw string delimiter
 	if err != nil {
@@ -335,7 +333,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	// end init function
@@ -344,7 +342,7 @@ func init() {
 	err := json.Unmarshal([]byte(l10nJSON), &l10nMap)
 	if err != nil {
 		e := Err{Fix: "L10N:error unmarshaling 'l10nJSON'"}
-		log.Fatalln(fnc+err.Error()+":%w", e)
+		log.Fatalln(fnc+":%w:"+err.Error(), e)
 	}
 	l10nJSON = "" // no longer needed
 }
@@ -363,7 +361,7 @@ func init() {
 				{"Name", all.GenFile},
 			},
 		}
-		return fmt.Errorf(fnc+":"+err.Error()+":%w", e)
+		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	return nil

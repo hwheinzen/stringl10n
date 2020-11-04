@@ -22,14 +22,12 @@ func main() {
 	err = getSimpleError()
 	if err != nil {
 		err = translate(err, lang) // ******** l10n ********
-		//log.Fatalln(pgm + ":" + err.Error())
 		log.Println(pgm + ":" + err.Error())
 	}
 
 	err = getComplexError()
 	if err != nil {
 		err = translate(err, lang) // ******** l10n ********
-		//log.Fatalln(pgm + ":" + err.Error())
 		log.Println(pgm + ":" + err.Error())
 	}
 }
@@ -53,7 +51,7 @@ func getSimpleError() error {
 	fnc := "getSimpleError"
 
 	e := Err{Fix: "EXAMPLE:simple error"}
-	return fmt.Errorf(fnc+":%w", e) // wrap e with a prefix
+	return fmt.Errorf(fnc+":%w", e) // wrap
 }
 
 func getComplexError() error {
@@ -71,5 +69,5 @@ func getComplexError() error {
 			{"Info", add},
 		},
 	}
-	return fmt.Errorf(fnc+":"+err.Error()+":%w", e) // wrap e with a prefix
+	return fmt.Errorf(fnc+":%w:"+err.Error(), e) // wrap
 }

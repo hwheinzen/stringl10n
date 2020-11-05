@@ -44,7 +44,7 @@ type l10nPair struct {
 // l10nMap contains all key strings and all translations.
 var l10nMap = make(map[string][]l10nPair, 10)
 
-// L10nTranslate returns a translation of a given text
+// L10nTranslate returns the adequate translation of a given text
 // according to the chosen language code.
 func L10nTranslate(key, lang string) (out string, err error) {
 	fnc := "L10nTranslate"
@@ -90,7 +90,7 @@ func L10nTranslate(key, lang string) (out string, err error) {
 	return "", fmt.Errorf(fnc+":%w", err)
 }
 
-// l10nVars declares all possible variables needed for substitution.
+// l10nVars declares all variables possibly needed for substitution.
 type l10nVars struct { {{range .Vars}}
 	{{.Name}} {{.Type}}{{end}}
 }
@@ -101,7 +101,7 @@ type l10nVars struct { {{range .Vars}}
 func L10nReplace(tmpl string, vars []struct {
 	Name string
 	Value interface{}
-}) (txt string, err error) {
+}) (out string, err error) {
 	fnc := "L10nReplace"
 
 	t := template.New("t"){{if eq (len .Funcs) 0}}
@@ -181,8 +181,8 @@ func L10nReplace(tmpl string, vars []struct {
 
 // L10nLocalizeError takes the innermost wrapped error of in and tries
 // to translate the error message and then tries to replace text/template
-// expressions with variable values if available. It creates a new error
-// and returns it wrapped with the input error message as prefix.
+// expressions with variable values if available.
+// It creates a new error and returns it wrapped again.
 func L10nLocalizeError(in error, lang string) (out, err error) {
 	fnc := "L10nLocalizeError"
 

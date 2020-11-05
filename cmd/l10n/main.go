@@ -50,8 +50,8 @@ type All struct {
 	Val2Template string
 }
 
-// buildtime serves 'l10n -version' if l10n was built with
-// -ldflags "-X 'main.buildtime=`date`'" .
+// buildtime serves 'l10n -version' if l10n was built with:
+// -ldflags "-X 'main.buildtime=`date -Iseconds`'"
 var buildtime string
 
 func main() {

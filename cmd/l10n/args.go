@@ -21,11 +21,11 @@ import (
 //
 // example
 // -------
-// $ stringl10n -json=example.json
+// $ l10n -json=l10n.json
 //
 // or
 // --
-// //go:generate stringl10n -json=example.json
+// //go:generate l10n -json=l10n.json
 
 func args(buildtime string) (jsonFile, lang string) {
 

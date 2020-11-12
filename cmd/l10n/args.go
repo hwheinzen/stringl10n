@@ -30,7 +30,7 @@ import (
 func args(buildtime string) (jsonFile, lang string) {
 
 	var version bool
-	flag.BoolVar(&version, "version", false, "(if built with -ldflags \"-X main.buildtime '`date`'\"")
+	flag.BoolVar(&version, "version", false, "(if built with -ldflags \"-X main.buildtime '`date -Iseconds`'\"")
 
 	var help bool
 	flag.BoolVar(&help, "help", false, "Usage information")
@@ -49,7 +49,7 @@ func args(buildtime string) (jsonFile, lang string) {
 	if version {
 		if buildtime == "" {
 			inf := Err{
-				Fix: "ARGS:{{.Name}}:unknown version",
+				Fix: "L10N:{{.Name}}:unknown version",
 				Var: []struct {
 					Name  string
 					Value interface{}
@@ -60,7 +60,7 @@ func args(buildtime string) (jsonFile, lang string) {
 			fmt.Println(translate(inf, lang))
 		} else {
 			inf := Err{
-				Fix: "ARGS:{{.Name}}:version of {{.Nam2}}",
+				Fix: "L10N:{{.Name}}:version of {{.Nam2}}",
 				Var: []struct {
 					Name  string
 					Value interface{}
@@ -76,7 +76,7 @@ func args(buildtime string) (jsonFile, lang string) {
 
 	if jsonFile == "" {
 		err := Err{
-			Fix: "ARGS:{{.Name}}:{{.Nam2}} argument missing",
+			Fix: "L10N:{{.Name}}:{{.Nam2}} argument missing",
 			Var: []struct {
 				Name  string
 				Value interface{}

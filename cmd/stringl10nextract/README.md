@@ -1,4 +1,5 @@
 # stringl10nextract
+OBSOLETE - USE l10nextract INSTEAD - 
 A programmer's tool to extract string literals from source files.
 
 This command generates output data that can be used as input to the

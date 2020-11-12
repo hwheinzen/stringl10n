@@ -1,5 +1,5 @@
 # mistake
-A useful error type. 
+A useful error type 
 
 Package `mistake` provides an error type that keeps
 fix and variable parts of a text message apart.
@@ -26,7 +26,7 @@ text/template expressions.
 `Var` hold name/value pairs where the names correspond to the
 text/template names in `Fix`.
 
-The error type `Err` satifies the standard Go error interface,
+The error type `Err` satifies the standard Go `error` interface,
 meaning: it has an `Error` method which returns `Fix`.
 
 The error type `Err` has an additional method `Vars` which returns `Var`.
@@ -50,7 +50,7 @@ To create an `Err` do:
 			Name  string
 			Value interface{}
 		}{
-			{"Name", pgm},
+			{"Name", variable},
 		},
 	}
 ```

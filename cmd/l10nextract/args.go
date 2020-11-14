@@ -50,7 +50,7 @@ var (
 func args(buildtime string) {
 
 	var version bool
-	flag.BoolVar(&version, "version", false, "(if built with -ldflags \"-X main.buildtime '`date -Iseconds`'\"")
+	flag.BoolVar(&version, "version", false, "(if built with -ldflags \"-X main.buildtime='```date -Iseconds`'\"") // ``` seem to be necessary for PrintDefaults()
 
 	var help bool
 	flag.BoolVar(&help, "help", false, "Usage information")

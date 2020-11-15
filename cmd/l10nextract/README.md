@@ -46,4 +46,4 @@ Later, that is after using `l10n` to generate additional go code (that will cont
 
 `$ find . | l10nextract -regexp=^YOURPREFIX -update=l10n.json`
 
-(You have to edit tje JSON file. Find further information with tool `l10n`.)
+(You have to edit the JSON file. Find further information with tool `l10n`.)

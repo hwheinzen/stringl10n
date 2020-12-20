@@ -58,7 +58,7 @@ func getComplexError() error {
 	fnc := "getComplexError"
 
 	err := errors.New("some error message from std library function")
-	add := "additional information"
+	add := "variable information"
 
 	e := Err{
 		Fix: "EXAMPLE:complex error with '{{.Info}}'",

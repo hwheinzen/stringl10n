@@ -1,4 +1,4 @@
-// Copyright 2020 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2020-21 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -8,8 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-
-	. "github.com/hwheinzen/stringl10n/mistake"
 )
 
 // arguments
@@ -27,7 +25,7 @@ import (
 // --
 // //go:generate l10n -json=l10n.json
 
-func args(buildtime string) (jsonFile, lang string) {
+func args(buildtime string) (jsonFile string) {
 
 	var version bool
 	flag.BoolVar(&version, "version", false, "(if built with -ldflags \"-X main.buildtime '```date -Iseconds`'\")") // ``` seem to be necessary for PrintDefaults()
@@ -36,8 +34,6 @@ func args(buildtime string) (jsonFile, lang string) {
 	flag.BoolVar(&help, "help", false, "Usage information")
 
 	flag.StringVar(&jsonFile, "json", "", "input file name")
-
-	flag.StringVar(&lang, "lang", "en", "language of error messages")
 
 	flag.Parse()
 
@@ -48,47 +44,18 @@ func args(buildtime string) (jsonFile, lang string) {
 
 	if version {
 		if buildtime == "" {
-			inf := Err{
-				Fix: "L10N:{{.Name}}:unknown version",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", pgm},
-				},
-			}
-			fmt.Println(translate(inf, lang))
+			fmt.Println(pgm+": unknown version")
 		} else {
-			inf := Err{
-				Fix: "L10N:{{.Name}}:version of {{.Nam2}}",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", pgm},
-					{"Nam2", buildtime},
-				},
-			}
-			fmt.Println(translate(inf, lang))
+			fmt.Println(pgm+": version of "+ buildtime)
 		}
 		os.Exit(0)
 	}
 
 	if jsonFile == "" {
-		err := Err{
-			Fix: "L10N:{{.Name}}:{{.Nam2}} argument missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", pgm},
-				{"Nam2", "-json"},
-			},
-		}
-		fmt.Fprintln(os.Stderr, translate(err, lang))
+		fmt.Println(pgm+": -json argument missing")
 		flag.Usage()
 		os.Exit(2)
 	}
 
-	return jsonFile, lang
+	return jsonFile
 }

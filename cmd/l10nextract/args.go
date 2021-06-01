@@ -11,8 +11,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-
-	. "github.com/hwheinzen/stringl10n/mistake"
 )
 
 // arguments
@@ -38,7 +36,6 @@ var (
 	argDir      string
 	argOut      string
 	argJSON     string
-	argLang     string
 	argKeywords []string // from inclist
 	argDeep     bool
 	argMin      int
@@ -58,7 +55,6 @@ func args(buildtime string) {
 	flag.StringVar(&argDir, "input-dir", "", "directory instead of stdin")
 	flag.StringVar(&argJSON, "i", "", "current JSON file")
 	flag.StringVar(&argOut, "o", "", "output file instead of stdout")
-	flag.StringVar(&argLang, "lang", "en", "programmers language")
 
 	var update string
 	flag.StringVar(&update, "update", "", "update JSON file; same as: -i=X -o=Y where X == Y")
@@ -82,28 +78,9 @@ func args(buildtime string) {
 
 	if version {
 		if buildtime == "" {
-			inf := Err{
-				Fix: "L10NEXTRACT:{{.Name}}:unknown version",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", pgm},
-				},
-			}
-			fmt.Println(translate(inf, argLang))
+			fmt.Println(pgm+": unknown version")
 		} else {
-			inf := Err{
-				Fix: "L10NEXTRACT:{{.Name}}:version of {{.Nam2}}",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", pgm},
-					{"Nam2", buildtime},
-				},
-			}
-			fmt.Println(translate(inf, argLang))
+			fmt.Println(pgm+": version of "+ buildtime)
 		}
 		os.Exit(0)
 	}

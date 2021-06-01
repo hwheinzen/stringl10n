@@ -42,8 +42,8 @@ You'll get a file `l10n.json` that looks something like:
 }
 ```
 
-Later, that is after using `l10n` to generate additional go code (that will contain some more error message strings), run:
+Now edit the JSON file and use the `l10n` tool. (More information there.)
+
+After more programming and adding new error messages run `l10nextract` with the `-update` parameter:
 
 `$ find . | l10nextract -regexp=^YOURPREFIX -update=l10n.json`
-
-(You have to edit the JSON file. Find further information with tool `l10n`.)

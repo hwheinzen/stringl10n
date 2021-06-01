@@ -15,6 +15,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -24,8 +25,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-
-	. "github.com/hwheinzen/stringl10n/mistake"
 )
 
 const pgm = "l10nextract"
@@ -42,37 +41,31 @@ func main() {
 
 	err := readJSON()
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	err = extract()
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	err = addVars()
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	err = addFuncs()
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	bytes, err := makeJSON()
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	err = createOutFile(bytes)
 	if err != nil {
-		err = translate(err, argLang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 }
@@ -91,15 +84,7 @@ func extract() error {
 			path := s.Text()
 			fi, err := os.Stat(path)
 			if err != nil {
-				e := Err{
-					Fix: "L10NEXTRACT:get fileinfo for {{.Name}} failed",
-					Var: []struct {
-						Name  string
-						Value interface{}
-					}{
-						{"Name", path},
-					},
-				}
+				e := errors.New("L10NEXTRACT:get fileinfo for "+path+" failed")
 				return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 			}
 			err = visitFile(path, fi, err)
@@ -153,15 +138,7 @@ func processInFile(path string) error {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, path, nil, 0)
 	if err != nil { // directories return error!
-		e := Err{
-			Fix: "L10NEXTRACT:parse file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", path},
-			},
-		}
+		e := errors.New("L10NEXTRACT:parse file "+path+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
@@ -278,15 +255,7 @@ func createOutFile(bytes []byte) (err error) {
 	if argOut != "" {
 		file, err = os.Create(argOut) // to file
 		if err != nil {
-			e := Err{
-				Fix: "L10NEXTRACT:create file {{.Name}} failed",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", argOut},
-				},
-			}
+			e := errors.New("L10NEXTRACT:create file "+argOut+" failed")
 			return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 		}
 		defer file.Close()
@@ -296,16 +265,7 @@ func createOutFile(bytes []byte) (err error) {
 
 	_, err = fmt.Fprint(file, head) // print leading comment lines
 	if err != nil {
-		e := Err{
-			Fix: "L10NEXTRACT:print to file {{.Name}} failed at: {{.Nam2}}",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", argOut},
-				{"Nam2", head},
-			},
-		}
+		e := errors.New("L10NEXTRACT:print to file "+argOut+" failed at: "+head)
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
@@ -330,16 +290,7 @@ func createOutFile(bytes []byte) (err error) {
 			for _, c := range comments {
 				_, err = fmt.Fprintln(file, c)
 				if err != nil {
-					e := Err{
-						Fix: "L10NEXTRACT:print to file {{.Name}} failed at: {{.Nam2}}",
-						Var: []struct {
-							Name  string
-							Value interface{}
-						}{
-							{"Name", argOut},
-							{"Nam2", c},
-						},
-					}
+					e := errors.New("L10NEXTRACT:print to file "+argOut+" failed at: "+c)
 					return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 				}
 			}
@@ -347,16 +298,7 @@ func createOutFile(bytes []byte) (err error) {
 
 		_, err = fmt.Fprintln(file, line) // print current line
 		if err != nil {
-			e := Err{
-				Fix: "L10NEXTRACT:print to file {{.Name}} failed at: {{.Nam2}}",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", argOut},
-					{"Nam2", line},
-				},
-			}
+			e := errors.New("L10NEXTRACT:print to file "+argOut+" failed at: "+line)
 			return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 		}
 	}

@@ -59,11 +59,13 @@ func L10nLocalizeError(in error, lang string) (out, err error)
 `L10nLocalizeError` operates on a `mistake.Err` and combines the two former functions.
 
 ### Example
-See code in directory example. There run:
+See code in directory `example`. There run:
 
 ```
 $ go generate
 $ go build
 $ ./example
+...
 $ ./example -lang=de
+...
 ```

@@ -1,4 +1,4 @@
-// Copyright 2020 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2020-21 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"time"
 
 	"github.com/dullgiulio/jsoncomments"
-	. "github.com/hwheinzen/stringl10n/mistake"
 )
 
 const pgm = "l10n"
@@ -25,8 +25,6 @@ type All struct {
 	Generated string
 	Input     string
 	Package   string
-	ErrorPref string
-	ErrorType string
 	GenFile   string
 	Vars      []struct {
 		Name string
@@ -56,23 +54,20 @@ var buildtime string
 
 func main() {
 
-	jsonFile, lang := args(buildtime)
+	jsonFile := args(buildtime)
 
 	all, err := getAll(jsonFile)
 	if err != nil {
-		err = translate(err, lang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	codeFn, err := makeCode(all)
 	if err != nil {
-		err = translate(err, lang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 
 	err = gofmt(codeFn)
 	if err != nil {
-		err = translate(err, lang) // ******** l10n ********
 		log.Fatalln(pgm + ":" + err.Error())
 	}
 }
@@ -94,15 +89,7 @@ func getAll(jsonFile string) (all All, err error) {
 
 	file, err := os.Open(jsonFile)
 	if err != nil {
-		e := Err{
-			Fix: "L10N:open {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-			},
-		}
+		e := errors.New("L10N:open "+jsonFile+" failed")
 		return all, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	defer file.Close()
@@ -112,81 +99,20 @@ func getAll(jsonFile string) (all All, err error) {
 
 	err = dec.Decode(&all)
 	if err != nil {
-		e := Err{
-			Fix: "L10N:decode JSON from {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-			},
-		}
+		e := errors.New("L10N:decode JSON from "+jsonFile+" failed")
 		return all, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	if all.Copyright == "" {
-		err := Err{
-			Fix: "L10N:{{.Nam2}} in {{.Name}} is missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-				{"Nam2", "Copyright"},
-			},
-		}
+		err = errors.New("L10N:'Copyright' missing in "+jsonFile)
 		return all, fmt.Errorf(fnc+":%w", err)
 	}
 	if all.Package == "" {
-		err := Err{
-			Fix: "L10N:{{.Nam2}} in {{.Name}} is missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-				{"Nam2", "Package"},
-			},
-		}
-		return all, fmt.Errorf(fnc+":%w", err)
-	}
-	if all.ErrorType == "" {
-		err := Err{
-			Fix: "L10N:{{.Nam2}} in {{.Name}} is missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-				{"Nam2", "ErrorType"},
-			},
-		}
-		return all, fmt.Errorf(fnc+":%w", err)
-	}
-	if all.ErrorPref == "" {
-		err := Err{
-			Fix: "L10N:{{.Nam2}} in {{.Name}} is missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-				{"Nam2", "ErrorPref"},
-			},
-		}
+		err = errors.New("L10N:'Package' missing in "+jsonFile)
 		return all, fmt.Errorf(fnc+":%w", err)
 	}
 	if all.Texts == nil || len(all.Texts) == 0 {
-		err := Err{
-			Fix: "L10N:{{.Nam2}} in {{.Name}} is missing",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", jsonFile},
-				{"Nam2", "Texts"},
-			},
-		}
+		err = errors.New("L10N:'Texts' missing in "+jsonFile)
 		return all, fmt.Errorf(fnc+":%w", err)
 	}
 
@@ -209,15 +135,7 @@ func makeCode(all All) (codeFn string, err error) {
 	codeFn = all.GenFile
 	file, err := os.Create(codeFn)
 	if err != nil {
-		e := Err{
-			Fix: "L10N:create file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", codeFn},
-			},
-		}
+		e := errors.New("L10N:create file "+codeFn+" failed")
 		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	defer file.Close()
@@ -225,28 +143,12 @@ func makeCode(all All) (codeFn string, err error) {
 	t := template.New("t")
 	_, err = t.Parse(code) // code.go
 	if err != nil {
-		e := Err{
-			Fix: "L10N:parse template {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", "code"},
-			},
-		}
+		e := errors.New("L10N:parse template 'code' failed")
 		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	err = t.Execute(file, all)
 	if err != nil {
-		e := Err{
-			Fix: "L10N:execute template {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", "code"},
-			},
-		}
+		e := errors.New("L10N:execute template 'code' failed")
 		return codeFn, fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
@@ -271,68 +173,28 @@ func init() {
 	var l10nJSON = `))
 
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	_, err = file.Write([]byte("`")) // raw string delimiter
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	bytes, err := json.MarshalIndent(all.Texts, "", " ") // JSON + indent
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	_, err = file.Write(bytes) // write JSON
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 	_, err = file.Write([]byte("`")) // raw string delimiter
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
@@ -352,15 +214,7 @@ func init() {
 `))
 
 	if err != nil {
-		e := Err{
-			Fix: "L10N:write to file {{.Name}} failed",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", all.GenFile},
-			},
-		}
+		e := errors.New("L10N:write to file "+all.GenFile+" failed")
 		return fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 

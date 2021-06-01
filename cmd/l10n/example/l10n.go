@@ -5,7 +5,6 @@
 package main
 
 import (
-	"log"
 	//	"otherpackage"
 )
 
@@ -15,21 +14,29 @@ func translate(in error, lang string) (out error) {
 	}
 
 	out, err := L10nLocalizeError(in, lang)
-	if err == nil {
+	if err != nil {
+		return err
+	}
+	if out != nil {
 		return out
 	}
+	// else: NOTFOUND
 
-	// If you use other selfmade packages that support l10n:
-	// - import these and ...
-	// - insert following code per package:
-	//
-	// 	out, err := otherpackage.L10nLocalizeError(in, lang)
-	// 	if err == nil {
+	// 	If you use other selfmade packages that support l10n:
+	// 	- import these and ...
+	// 	- insert following code per package:
+	// 	
+	// 		out, err := otherpackage.L10nLocalizeError(in, lang)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if out != nil {
 	// 		return out
 	// 	}
+	// else: NOTFOUND
 
-	if err != nil {
-		log.Println(err)
-	}
+	// This would be a good place to analyse NOTFOUND
+	// an maybe do some logging.
+
 	return in
 }

@@ -1,4 +1,4 @@
-// Copyright 2020 Hans-Werner Heinzen. All rights reserved.
+// Copyright 2020-21 Hans-Werner Heinzen. All rights reserved.
 // Use of this source code is governed by a license
 // that can be found in the LICENSE file.
 
@@ -23,9 +23,9 @@ package {{.Package}}
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"encoding/json"
 	"log"
 	"strings"
 	"text/template" {{if ne (len .Funcs) 0}}{{range .Funcs}}{{if ne .Path ""}}
@@ -41,52 +41,35 @@ type l10nPair struct {
 	Value string
 }
 
-// l10nMap contains all key strings and all translations.
+// l10nMap contains all key strings with all their translations.
 var l10nMap = make(map[string][]l10nPair, 10)
 
 // L10nTranslate returns the adequate translation of a given text
-// according to the chosen language code.
-func L10nTranslate(key, lang string) (out string, err error) {
+// according to the chosen language code or an error.
+func L10nTranslate(key, lang string) (string, error) {
 	fnc := "L10nTranslate"
 	
 	pairs, ok := l10nMap[key]
 	if !ok {
-		err := {{.ErrorType}}{
-			Fix: "{{.ErrorPref}}:no entry for '{{.NameTemplate}}'",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", key},
-			},
-		}
+		err := errors.New("L10N:no entry for '"+key+"'")
 		return "", fmt.Errorf(fnc+":%w", err)
 	}
 	for _, v := range pairs {
 		if len(lang) >= 5 { // assuming POSIX locales: language + country
 			if v.Lang == lang[:5] {
-				return v.Value, nil
+				return v.Value, nil // found
 			}
 		}
 	}
 	for _, v := range pairs {
 		if len(lang) >= 2 { // assuming POSIX locales: language only
 			if v.Lang == lang[:2] {
-				return v.Value, nil
+				return v.Value, nil // found
 			}
 		}
 	}
 
-	err = {{.ErrorType}}{
-		Fix: "{{.ErrorPref}}:no {{.Nam2Template}} translation for '{{.NameTemplate}}'",
-		Var: []struct {
-			Name  string
-			Value interface{}
-		}{
-			{"Name", key},
-			{"Nam2", lang},
-		},
-	}
+	err := errors.New("L10N:no "+lang+" translation for '"+key+"'")
 	return "", fmt.Errorf(fnc+":%w", err)
 }
 
@@ -97,36 +80,26 @@ type l10nVars struct { {{range .Vars}}
 
 // L10nReplace replaces text/template expressions and returns
 // the changed text string. Variables in these text/template 
-// expressions are substituted by values.
+// expressions are substituted by values or an error.
 func L10nReplace(tmpl string, vars []struct {
 	Name string
 	Value interface{}
-}) (out string, err error) {
+}) (string, error) {
 	fnc := "L10nReplace"
 
 	t := template.New("t"){{if eq (len .Funcs) 0}}
-	_, err = t.Parse(tmpl){{else}}
+	_, err := t.Parse(tmpl){{else}}
 	funcMap := template.FuncMap { {{range .Funcs}}
 		"{{.Name}}": {{.Function}},{{end}}
 	}
-	_, err = t.Funcs(funcMap).Parse(tmpl){{end}}
+	_, err := t.Funcs(funcMap).Parse(tmpl){{end}}
 	if err != nil {
-		e := {{.ErrorType}}{
-			Fix: "{{.ErrorPref}}:error parsing '{{.NameTemplate}}'",
-			Var: []struct {
-				Name  string
-				Value interface{}
-			}{
-				{"Name", tmpl},
-			},
-		}
+		e := errors.New("L10N:error parsing template:\n'"+tmpl+"'\n")
 		return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
 	allVars := l10nVars{}
 
-{{$ErrorType := .ErrorType}}
-{{$ErrorPref := .ErrorPref}}
 {{$TypeTemplate := .TypeTemplate}}
 {{$NameTemplate := .NameTemplate}}
 {{$Nam2Template := .Nam2Template}}
@@ -136,30 +109,12 @@ func L10nReplace(tmpl string, vars []struct {
 		case "{{.Name}}":
 			v, ok := pair.Value.({{.Type}})
 			if !ok {
-				e := {{$ErrorType}}{
-					Fix: "{{$ErrorPref}}:wrong variable type {{$TypeTemplate}} for '{{$NameTemplate}}', expected: {{$Nam2Template}}",
-					Var: []struct {
-						Name  string
-						Value interface{}
-					}{
-						{"Type", fmt.Sprintf("%T", pair.Value)},
-						{"Name", tmpl},
-						{"Nam2", "{{.Type}}"},
-					},
-				}
-				return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
+				err = errors.New("L10N:variable '{{.Name}}' should have type {{.Type}} but has "+fmt.Sprintf("%T", pair.Value)+" in template:\n'"+tmpl+"'\n")
+				return "", fmt.Errorf(fnc+":%w:", err)
 			}
 			allVars.{{.Name}} = v{{end}}
 		default:
-			err = {{.ErrorType}}{
-				Fix: "{{.ErrorPref}}:variable {{.NameTemplate}} not declared",
-				Var: []struct {
-					Name  string
-					Value interface{}
-				}{
-					{"Name", pair.Name},
-				},
-			}
+			err = errors.New("L10N:variable '"+pair.Name+"' not declared for template:\n'"+tmpl+"'\n")
 			return "", fmt.Errorf(fnc+":%w", err)
 		}
 	}
@@ -167,12 +122,7 @@ func L10nReplace(tmpl string, vars []struct {
 	var b bytes.Buffer
 	err = t.Execute(&b, allVars)
 	if err != nil {
-		e := Err{
-			Fix: "{{$ErrorPref}}:error executing template {{$NameTemplate}}",
-			Var: []struct {Name  string; Value interface{}}{
-				{"Name", tmpl},
-			},
-		}
+		e := errors.New("L10N:error executing template:\n'"+tmpl+"'\n")
 		return "", fmt.Errorf(fnc+":%w:"+err.Error(), e)
 	}
 
@@ -180,9 +130,12 @@ func L10nReplace(tmpl string, vars []struct {
 }
 
 // L10nLocalizeError takes the innermost wrapped error of in and tries
-// to translate the error message and then tries to replace text/template
-// expressions with variable values if available.
+// 1. to translate the error message and
+// 2. to replace text/template expressions with variable values if available.
 // It creates a new error and returns it wrapped again.
+//
+// If 1. fails it returns two nil errors indicating "NOTFOUND".
+// If 2. fails it return nil as out and an error.
 func L10nLocalizeError(in error, lang string) (out, err error) {
 	fnc := "L10nLocalizeError"
 
@@ -197,7 +150,7 @@ func L10nLocalizeError(in error, lang string) (out, err error) {
 	// Translate
 	txt, err := L10nTranslate(inner.Error(), lang)
 	if err != nil {
-		return nil, fmt.Errorf(fnc+":%w", err)
+		return nil, nil // notfound, ignore why
 	}
 
 	// Substitute

@@ -20,8 +20,8 @@ variables there.
 - `Var` is a slice of name/value pairs
 
 `Fix` is meant to hold a message text with optional placeholders
-embedded. If you use the `l10n` tool, you will probably make
-placeholders text/template expressions.
+embedded. If you use the `l10n` tool, the placeholders must be
+text/template expressions.
 
 `Var` hold name/value pairs where the names correspond to the
 text/template names in `Fix`.

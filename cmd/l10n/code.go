@@ -48,6 +48,15 @@ var l10nMap = make(map[string][]l10nPair, 10)
 // according to the chosen language code or an error.
 func L10nTranslate(key, lang string) (string, error) {
 	fnc := "L10nTranslate"
+
+	if key == "" {
+		err := errors.New("L10N:key missing")
+		return "", fmt.Errorf(fnc+":%w", err)
+	}
+	if lang == "" {
+		err := errors.New("L10N:lang missing")
+		return "", fmt.Errorf(fnc+":%w", err)
+	}
 	
 	pairs, ok := l10nMap[key]
 	if !ok {
@@ -86,6 +95,11 @@ func L10nReplace(tmpl string, vars []struct {
 	Value interface{}
 }) (string, error) {
 	fnc := "L10nReplace"
+
+	if tmpl == "" {
+		err := errors.New("L10N:tmpl missing")
+		return "", fmt.Errorf(fnc+":%w", err)
+	}
 
 	t := template.New("t"){{if eq (len .Funcs) 0}}
 	_, err := t.Parse(tmpl){{else}}
@@ -138,6 +152,15 @@ func L10nReplace(tmpl string, vars []struct {
 // If 2. fails it return nil as out and an error.
 func L10nLocalizeError(in error, lang string) (out, err error) {
 	fnc := "L10nLocalizeError"
+
+	if in == nil {
+		err := errors.New("L10N:in missing")
+		return nil, fmt.Errorf(fnc+":%w", err)
+	}
+	if lang == "" {
+		err := errors.New("L10N:lang missing")
+		return nil, fmt.Errorf(fnc+":%w", err)
+	}
 
 	// Unwrap
 	var inner, e error

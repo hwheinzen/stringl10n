@@ -11,13 +11,21 @@ Main use for these tools is the localization of error messages.
 
 - To generate and to update the JSON input file for `l10n` use the `l10nextract` command.
 
+
 ### OBSOLETE
 The older package `message` and the older commands `stringl10n` and `stringl10nextract` are considered deprecated.
 
-### Install
-Provided that your Go environment is ready, just do:
 
-`$ go get github.com/hwheinzen/stringl10n/...`
+### Usage
+Use `"github.com/hwheinzen/stringl10n/mistake"` in your project's import statements.
+
+To get the commands `l10n` and `l10nextract` do:
+
+`$ go install github.com/hwheinzen/stringl10n/cmd/l10n@latest`
+`$ go install github.com/hwheinzen/stringl10n/cmd/l10nextract@latest`
+
+(But maybe you like to have all sources at hand: clone the repository then.)
+
 
 ### Example
 Some example code can be found in cmd/l10n/example.

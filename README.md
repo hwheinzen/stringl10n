@@ -21,8 +21,10 @@ Use `"github.com/hwheinzen/stringl10n/mistake"` in your project's import stateme
 
 To get the commands `l10n` and `l10nextract` do:
 
-`$ go install github.com/hwheinzen/stringl10n/cmd/l10n@latest`
-`$ go install github.com/hwheinzen/stringl10n/cmd/l10nextract@latest`
+```
+$ go install github.com/hwheinzen/stringl10n/cmd/l10n@latest
+$ go install github.com/hwheinzen/stringl10n/cmd/l10nextract@latest`
+```
 
 (But maybe you like to have all sources at hand: clone the repository then.)
 
